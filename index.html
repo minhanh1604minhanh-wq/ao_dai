@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Thiết lập giao diện tổng thể */
+        /* --- THIẾT LẬP GIAO DIỆN TỔNG THỂ --- */
         body {
             margin: 0;
             padding: 0;
@@ -69,19 +69,18 @@
             }
         }
 
-        /* Ẩn toàn bộ màn hình intro */
         #intro-overlay.fade-out {
             opacity: 0;
             pointer-events: none;
         }
 
-        /* --- GIAO DIỆN CHÍNH (Sẽ hiện lên sau Intro) --- */
+        /* --- GIAO DIỆN CHÍNH --- */
         .main-content {
             width: 100%;
             height: 100%;
             opacity: 0;
             transform: scale(1.02);
-            transition: opacity 1.5s ease 4s, transform 1.5s ease 4s; /* Chờ intro chạy xong */
+            transition: opacity 1.5s ease 4s, transform 1.5s ease 4s;
         }
 
         .main-content.visible {
@@ -97,12 +96,11 @@
             transition: filter 0.5s ease;
         }
 
-        /* Làm mờ mô hình 3D khi bật bảng thông tin */
         body.info-active model-viewer {
             filter: blur(4px) brightness(0.5);
         }
 
-        /* Lớp phủ mờ cho các bảng thông tin */
+        /* Lớp phủ bảng thông tin */
         .overlay-layer {
             position: absolute;
             top: 0;
@@ -127,7 +125,7 @@
             pointer-events: auto;
         }
 
-        /* Khung chứa nội dung thông tin */
+        /* Khung nội dung thông tin */
         .info-content {
             width: 100%;
             max-width: 650px;
@@ -144,19 +142,13 @@
             box-sizing: border-box;
         }
 
-        .info-content::-webkit-scrollbar {
-            width: 5px;
-        }
-        .info-content::-webkit-scrollbar-thumb {
-            background-color: #c5a059;
-            border-radius: 3px;
-        }
+        .info-content::-webkit-scrollbar { width: 5px; }
+        .info-content::-webkit-scrollbar-thumb { background-color: #c5a059; border-radius: 3px; }
 
         .overlay-layer.active .info-content {
             transform: translateY(0);
         }
 
-        /* Tiêu đề */
         .info-content h2 {
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
@@ -195,7 +187,7 @@
             font-weight: 500;
         }
 
-        /* --- THIẾT KẾ NÚT BẤM CHUYÊN NGHIỆP THẾ HỆ MỚI --- */
+        /* --- THIẾT KẾ NÚT BẤM CHUYÊN NGHIỆP --- */
         .button-container {
             position: absolute;
             bottom: 50px;
@@ -218,7 +210,7 @@
             color: #c5a059;
             background: rgba(15, 15, 15, 0.7);
             border: 1px solid rgba(197, 160, 89, 0.4);
-            border-radius: 2px; /* Góc bo nhẹ vuông vắn tạo nét sang trọng */
+            border-radius: 2px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 3px;
@@ -228,7 +220,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        /* Hiệu ứng đường viền và ánh sáng khi Hover */
         .control-btn::before {
             content: '';
             position: absolute;
@@ -236,12 +227,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(197, 160, 89, 0.15),
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, rgba(197, 160, 89, 0.15), transparent);
             transition: 0.5s;
         }
 
@@ -257,7 +243,6 @@
             transform: translateY(-3px);
         }
 
-        /* Nút ở trạng thái Đóng Lại (Active) */
         .control-btn.active-state {
             background-color: rgba(197, 160, 89, 0.15);
             border-color: #c5a059;
@@ -265,40 +250,25 @@
             box-shadow: inset 0 0 10px rgba(197, 160, 89, 0.2);
         }
 
-        /* Tối ưu giao diện mượt hơn trên điện thoại nhỏ */
+        /* --- TỐI ƯU MOBILE --- */
         @media (max-width: 480px) {
-            .intro-text {
-                font-size: 1.8rem;
-                letter-spacing: 4px;
-            }
-            .info-content {
-                padding: 25px 20px;
-            }
-            .button-container {
-                bottom: 30px;
-                gap: 15px;
-                width: 90%;
-                min-width: unset;
-            }
-            .control-btn {
-                font-size: 0.75rem;
-                padding: 12px 15px;
-                letter-spacing: 1.5px;
-                flex: 1;
-            }
+            .intro-text { font-size: 1.8rem; letter-spacing: 4px; }
+            .info-content { padding: 25px 20px; }
+            .button-container { bottom: 30px; gap: 15px; width: 90%; min-width: unset; }
+            .control-btn { font-size: 0.75rem; padding: 12px 15px; letter-spacing: 1.5px; flex: 1; }
         }
     </style>
 </head>
 <body>
 
     <div id="intro-overlay">
-        <div class="intro-text">Mô hình Áo Dài</div>
+        <div class="intro-text">Mô hình Áo Ngũ Thân</div>
     </div>
 
     <div id="main-content" class="main-content">
 
         <model-viewer
-            src="8d618a9f-7b50-4ff1-bd84-881cfc2889cb.glb"
+            src="aodai.glb"
             camera-controls
             auto-rotate
             rotation-per-second="20deg"
@@ -312,13 +282,13 @@
 
         <div id="overlay-detail" class="overlay-layer">
             <div class="info-content">
-                <h2>Chi tiết trang phục</h2>
-                <p>Bộ trang phục được thiết kế tỉ mỉ với sự kết hợp hài hòa giữa chất liệu cao cấp và đường nét sắc sảo, tôn vinh vẻ đẹp truyền thống và sự uy nghiêm. Chi tiết bao gồm:</p>
+                <h2>Áo ngũ thân</h2>
+                <p>Áo ngũ thân được xem là tiền thân trực tiếp của áo dài hiện đại. Loại áo này phát triển mạnh dưới thời nhà Nguyễn, đặc biệt từ thế kỷ XVIII đến thế kỷ XIX. Áo thể hiện sự trang nghiêm, lịch sự và là dấu mốc quan trọng trong quá trình hình thành áo dài Việt Nam ngày nay[cite: 1].</p>
                 <ul>
-                    <li><strong>Áo choàng ngoài:</strong> Sử dụng chất liệu lụa tơ tằm dệt thủ công, thêu họa tiết chìm dọc viền áo giúp tăng thêm sự uy nghiêm.</li>
-                    <li><strong>Áo lót trong:</strong> Vải cotton lụa thoáng mát, thấm hút mồ hôi tốt với form dáng ôm vừa vặn cơ thể.</li>
-                    <li><strong>Phụ kiện đi kèm:</strong> Đai lưng bản to bằng da thật, đính kèm ngọc bội trang trí được chạm khắc tinh xảo.</li>
-                    <li><strong>Giày & Hài:</strong> Giày mũi vếch truyền thống, bọc vải gấm thêu tay đồng bộ với tổng thể trang phục.</li>
+                    <li><strong>Cấu tạo năm thân vải:</strong> Gồm hai thân trước, hai thân sau kết hợp khéo léo cùng một thân nhỏ nằm ẩn ở bên trong[cite: 1].</li>
+                    <li><strong>Kiểu dáng đặc trưng:</strong> Thiết kế cổ đứng trang nhã, hàng cúc cài lệch sang phía bên phải và tà áo dài thướt tha. Trang phục phù hợp cho cả nam lẫn nữ sử dụng trong đời sống hằng ngày và các dịp đại lễ quan trọng[cite: 1].</li>
+                    <li><strong>Biểu tượng Ngũ thường:</strong> Theo quan niệm truyền thống, năm thân áo tượng trưng cho Ngũ thường gồm Nhân, Nghĩa, Lễ, Trí, Tín – những phẩm chất đạo đức cốt lõi của con người[cite: 1].</li>
+                    <li><strong>Biểu tượng Gia tộc:</strong> Năm thân áo còn là hình ảnh đại diện thiêng liêng cho cha mẹ đẻ, cha mẹ vợ (hoặc cha mẹ chồng) và chính người mặc áo[cite: 1].</li>
                 </ul>
             </div>
         </div>
@@ -326,7 +296,7 @@
         <div id="overlay-guide" class="overlay-layer">
             <div class="info-content">
                 <h2>Hướng dẫn tương tác</h2>
-                <p>Để phục vụ quá trình khảo cứu văn vật và quan sát mô hình không gian ba chiều một cách toàn diện, quý vị vui lòng thao tác theo chỉ dẫn dưới đây:</p>
+                <p>Để phục vụ quá trình khảo cứu văn vật và quan sát mô hình không gian ba chiều một cách toàn diện, quý vị vui lòng thao tác theo chỉ dẫn dưới đây[cite: 2]:</p>
                 <ul>
                     <li><strong>Phóng to / Thu nhỏ:</strong> Sử dụng thao tác khép hoặc mở hai ngón tay trên màn hình (hoặc lăn nút cuộn chuột trên máy tính) để thay đổi khoảng cách tiêu cự không giới hạn.</li>
                     <li><strong>Di chuyển góc nhìn (Pan):</strong> Sử dụng đồng thời hai ngón tay di chuyển trên màn hình (hoặc giữ chuột phải và kéo trên máy tính) để dịch chuyển vị trí trung tâm của mô hình.</li>
@@ -337,7 +307,7 @@
         </div>
 
         <div class="button-container">
-            <button id="detail-btn" class="control-btn">Chi Tiết</button>
+            <button id="detail-btn" class="control-btn">Áo Ngũ Thân</button>
             <button id="guide-btn" class="control-btn">Hướng Dẫn</button>
         </div>
 
@@ -353,29 +323,27 @@
         const introOverlay = document.getElementById('intro-overlay');
         const mainContent = document.getElementById('main-content');
 
-        // XỬ LÝ ĐỂ BẬT KÍCH HOẠT HIỆU ỨNG CHUYỂN CẢNH
+        // XỬ LÝ CHUYỂN CẢNH INTRO
         window.addEventListener('DOMContentLoaded', () => {
-            // Cho phép màn hình chính sẵn sàng hiện lên song song với hoạt ảnh mờ dần của intro
             mainContent.classList.add('visible');
 
-            // Sau 4.5 giây (khi chữ ẩn hoàn toàn), xóa bỏ hoàn toàn màn che intro
             setTimeout(() => {
                 introOverlay.classList.add('fade-out');
                 setTimeout(() => {
-                    introOverlay.remove(); // Xóa khỏi DOM để tối ưu bộ nhớ
+                    introOverlay.remove();
                 }, 1000);
             }, 4500);
         });
 
-        // Hàm reset trạng thái nút bấm về mặc định
+        // HÀM RESET TRẠNG THÁI NÚT
         function resetButtons() {
-            detailBtn.textContent = 'Chi Tiết';
+            detailBtn.textContent = 'Áo Ngũ Thân';
             detailBtn.classList.remove('active-state');
             guideBtn.textContent = 'Hướng Dẫn';
             guideBtn.classList.remove('active-state');
         }
 
-        // Xử lý sự kiện nút Chi Tiết
+        // XỬ LÝ NÚT CHI TIẾT
         detailBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (overlayGuide.classList.contains('active')) {
@@ -395,7 +363,7 @@
             }
         });
 
-        // Xử lý sự kiện nút Hướng Dẫn
+        // XỬ LÝ NÚT HƯỚNG DẪN
         guideBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (overlayDetail.classList.contains('active')) {
@@ -415,7 +383,7 @@
             }
         });
 
-        // Đóng nhanh bảng khi nhấp vào vùng trống bên ngoài khung chữ
+        // ĐÓNG BẢNG KHI NHẤP RA NGOÀI
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('overlay-layer')) {
                 overlayDetail.classList.remove('active');
