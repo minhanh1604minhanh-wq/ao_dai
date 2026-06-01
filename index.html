@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MÔ HÌNH 3D TƯƠNG TÁC</title>
     
-    <!-- Tích hợp thư viện Model Viewer -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
     
-    <!-- Thêm Google Fonts cho phông chữ trang nghiêm, cổ điển -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +22,71 @@
             font-family: 'Lora', serif; 
             background: radial-gradient(circle at center, #2a2a2a 0%, #0a0a0a 100%);
             color: #f4f4f4;
+        }
+
+        /* --- HIỆU ỨNG CHÀO MỪNG (INTRO ANIMATION) --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0a;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s ease;
+        }
+
+        .intro-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #c5a059;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: fadeInText 2s forwards 0.5s, fadeOutText 1.5s forwards 3s;
+            text-shadow: 0 0 20px rgba(197, 160, 89, 0.2);
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        @keyframes fadeInText {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeOutText {
+            to {
+                opacity: 0;
+                transform: scale(1.05);
+                filter: blur(4px);
+            }
+        }
+
+        /* Ẩn toàn bộ màn hình intro */
+        #intro-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- GIAO DIỆN CHÍNH (Sẽ hiện lên sau Intro) --- */
+        .main-content {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(1.02);
+            transition: opacity 1.5s ease 4s, transform 1.5s ease 4s; /* Chờ intro chạy xong */
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         /* Tùy chỉnh khung 3D */
@@ -64,26 +127,25 @@
             pointer-events: auto;
         }
 
-        /* Khung chứa nội dung thông tin - Có khả năng vuốt cuộn tự động */
+        /* Khung chứa nội dung thông tin */
         .info-content {
             width: 100%;
             max-width: 650px;
-            max-height: 75vh; /* Giới hạn chiều cao để không bị tràn trên điện thoại */
-            overflow-y: auto;  /* Kích hoạt tính năng vuốt lên xuống khi nội dung dài */
+            max-height: 75vh;
+            overflow-y: auto;
             padding: 40px;
-            background: rgba(15, 15, 15, 0.9);
-            border: 1px solid #c5a059;
+            background: rgba(15, 15, 15, 0.95);
+            border: 1px solid rgba(197, 160, 89, 0.5);
             border-radius: 4px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
             transform: translateY(20px);
-            transition: transform 0.4s ease;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             box-sizing: border-box;
         }
 
-        /* Tùy chỉnh thanh cuộn bên trong khung thông tin cho đẹp và mảnh hơn */
         .info-content::-webkit-scrollbar {
-            width: 6px;
+            width: 5px;
         }
         .info-content::-webkit-scrollbar-thumb {
             background-color: #c5a059;
@@ -133,110 +195,152 @@
             font-weight: 500;
         }
 
-        /* Khu vực chứa các nút bấm điều khiển phía dưới */
+        /* --- THIẾT KẾ NÚT BẤM CHUYÊN NGHIỆP THẾ HỆ MỚI --- */
         .button-container {
             position: absolute;
-            bottom: 40px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 20px; /* Khoảng cách giữa 2 nút */
+            gap: 25px;
             z-index: 20;
-            width: 90%;
-            max-width: 500px;
+            width: auto;
+            min-width: 320px;
             justify-content: center;
         }
 
-        /* Định dạng nút bấm hệ thống công thức chung */
         .control-btn {
-            flex: 1;
-            padding: 13px 20px;
+            position: relative;
+            padding: 14px 35px;
             font-family: 'Playfair Display', serif;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 600;
             color: #c5a059;
-            background-color: rgba(10, 10, 10, 0.8);
-            border: 1px solid #c5a059;
-            border-radius: 4px;
+            background: rgba(15, 15, 15, 0.7);
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            border-radius: 2px; /* Góc bo nhẹ vuông vắn tạo nét sang trọng */
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(4px);
-            white-space: nowrap;
-            text-align: center;
+            letter-spacing: 3px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Hiệu ứng đường viền và ánh sáng khi Hover */
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(197, 160, 89, 0.15),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .control-btn:hover::before {
+            left: 100%;
         }
 
         .control-btn:hover {
+            color: #111111;
             background-color: #c5a059;
-            color: #0a0a0a;
-            box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+            border-color: #c5a059;
+            box-shadow: 0 0 25px rgba(197, 160, 89, 0.5);
+            transform: translateY(-3px);
+        }
+
+        /* Nút ở trạng thái Đóng Lại (Active) */
+        .control-btn.active-state {
+            background-color: rgba(197, 160, 89, 0.15);
+            border-color: #c5a059;
+            color: #f4f4f4;
+            box-shadow: inset 0 0 10px rgba(197, 160, 89, 0.2);
         }
 
         /* Tối ưu giao diện mượt hơn trên điện thoại nhỏ */
         @media (max-width: 480px) {
+            .intro-text {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
             .info-content {
                 padding: 25px 20px;
             }
-            .control-btn {
-                font-size: 0.8rem;
-                padding: 12px 10px;
-                letter-spacing: 1px;
-            }
             .button-container {
-                bottom: 25px;
-                gap: 10px;
+                bottom: 30px;
+                gap: 15px;
+                width: 90%;
+                min-width: unset;
+            }
+            .control-btn {
+                font-size: 0.75rem;
+                padding: 12px 15px;
+                letter-spacing: 1.5px;
+                flex: 1;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Khung 3D: Cấu hình min/max-field-of-view để mở rộng phạm vi phóng to/thu nhỏ tối đa -->
-    <model-viewer
-        src="8d618a9f-7b50-4ff1-bd84-881cfc2889cb.glb"
-        camera-controls
-        auto-rotate
-        rotation-per-second="20deg"
-        shadow-intensity="1.5"
-        shadow-softness="1"
-        environment-image="neutral"
-        exposure="0.9"
-        min-field-of-view="1deg"
-        max-field-of-view="180deg">
-    </model-viewer>
-
-    <!-- BẢNG 1: CHI TIẾT TRANG PHỤC -->
-    <div id="overlay-detail" class="overlay-layer">
-        <div class="info-content">
-            <h2>Chi tiết trang phục</h2>
-            <p>Bộ trang phục được thiết kế tỉ mỉ với sự kết hợp hài hòa giữa chất liệu cao cấp và đường nét sắc sảo, tôn vinh vẻ đẹp truyền thống và sự uy nghiêm. Chi tiết bao gồm:</p>
-            <ul>
-                <li><strong>Áo choàng ngoài:</strong> Sử dụng chất liệu lụa tơ tằm dệt thủ công, thêu họa tiết chìm dọc viền áo giúp tăng thêm sự uy nghiêm.</li>
-                <li><strong>Áo lót trong:</strong> Vải cotton lụa thoáng mát, thấm hút mồ hôi tốt với form dáng ôm vừa vặn cơ thể.</li>
-                <li><strong>Phụ kiện đi kèm:</strong> Đai lưng bản to bằng da thật, đính kèm ngọc bội trang trí được chạm khắc tinh xảo.</li>
-                <li><strong>Giày & Hài:</strong> Giày mũi vếch truyền thống, bọc vải gấm thêu tay đồng bộ với tổng thể trang phục.</li>
-            </ul>
-        </div>
+    <div id="intro-overlay">
+        <div class="intro-text">Mô hình Áo Dài</div>
     </div>
 
-    <!-- BẢNG 2: HƯỚNG DẪN TƯƠNG TÁC -->
-    <div id="overlay-guide" class="overlay-layer">
-        <div class="info-content">
-            <h2>Hướng dẫn tương tác</h2>
-            <p>Để phục vụ quá trình khảo cứu văn vật và quan sát mô hình không gian ba chiều một cách toàn diện, quý vị vui lòng thao tác theo chỉ dẫn dưới đây:</p>
-            <ul>
-                <li><strong>Phóng to / Thu nhỏ:</strong> Sử dụng thao tác khép hoặc mở hai ngón tay trên màn hình (hoặc lăn nút cuộn chuột trên máy tính) để thay đổi khoảng cách tiêu cự không giới hạn.</li>
-                <li><strong>Di chuyển góc nhìn (Pan):</strong> Sử dụng đồng thời hai ngón tay di chuyển trên màn hình (hoặc giữ chuột phải và kéo trên máy tính) để dịch chuyển vị trí trung tâm của mô hình.</li>
-                <li><strong>Xoay mô hình:</strong> Vuốt một ngón tay (hoặc giữ chuột trái) và di chuyển theo các hướng để xoay toàn diện góc nhìn xung quanh vật thể.</li>
-                <li><strong>Bật/Tắt thông tin:</strong> Nhấp vào các nút chức năng phía dưới để mở bảng khảo cứu dữ liệu hoặc đóng lại khi cần tiếp tục quan sát mô hình 3D.</li>
-            </ul>
-        </div>
-    </div>
+    <div id="main-content" class="main-content">
 
-    <!-- KHU VỰC NÚT ĐIỀU KHIỂN -->
-    <div class="button-container">
-        <button id="detail-btn" class="control-btn">Chi Tiết</button>
-        <button id="guide-btn" class="control-btn">Hướng Dẫn</button>
+        <model-viewer
+            src="8d618a9f-7b50-4ff1-bd84-881cfc2889cb.glb"
+            camera-controls
+            auto-rotate
+            rotation-per-second="20deg"
+            shadow-intensity="1.5"
+            shadow-softness="1"
+            environment-image="neutral"
+            exposure="0.9"
+            min-field-of-view="1deg"
+            max-field-of-view="180deg">
+        </model-viewer>
+
+        <div id="overlay-detail" class="overlay-layer">
+            <div class="info-content">
+                <h2>Chi tiết trang phục</h2>
+                <p>Bộ trang phục được thiết kế tỉ mỉ với sự kết hợp hài hòa giữa chất liệu cao cấp và đường nét sắc sảo, tôn vinh vẻ đẹp truyền thống và sự uy nghiêm. Chi tiết bao gồm:</p>
+                <ul>
+                    <li><strong>Áo choàng ngoài:</strong> Sử dụng chất liệu lụa tơ tằm dệt thủ công, thêu họa tiết chìm dọc viền áo giúp tăng thêm sự uy nghiêm.</li>
+                    <li><strong>Áo lót trong:</strong> Vải cotton lụa thoáng mát, thấm hút mồ hôi tốt với form dáng ôm vừa vặn cơ thể.</li>
+                    <li><strong>Phụ kiện đi kèm:</strong> Đai lưng bản to bằng da thật, đính kèm ngọc bội trang trí được chạm khắc tinh xảo.</li>
+                    <li><strong>Giày & Hài:</strong> Giày mũi vếch truyền thống, bọc vải gấm thêu tay đồng bộ với tổng thể trang phục.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="overlay-guide" class="overlay-layer">
+            <div class="info-content">
+                <h2>Hướng dẫn tương tác</h2>
+                <p>Để phục vụ quá trình khảo cứu văn vật và quan sát mô hình không gian ba chiều một cách toàn diện, quý vị vui lòng thao tác theo chỉ dẫn dưới đây:</p>
+                <ul>
+                    <li><strong>Phóng to / Thu nhỏ:</strong> Sử dụng thao tác khép hoặc mở hai ngón tay trên màn hình (hoặc lăn nút cuộn chuột trên máy tính) để thay đổi khoảng cách tiêu cự không giới hạn.</li>
+                    <li><strong>Di chuyển góc nhìn (Pan):</strong> Sử dụng đồng thời hai ngón tay di chuyển trên màn hình (hoặc giữ chuột phải và kéo trên máy tính) để dịch chuyển vị trí trung tâm của mô hình.</li>
+                    <li><strong>Xoay mô hình:</strong> Vuốt một ngón tay (hoặc giữ chuột trái) và di chuyển theo các hướng để xoay toàn diện góc nhìn xung quanh vật thể.</li>
+                    <li><strong>Bật/Tắt thông tin:</strong> Nhấp vào các nút chức năng phía dưới để mở bảng khảo cứu dữ liệu hoặc đóng lại khi cần tiếp tục quan sát mô hình 3D.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="detail-btn" class="control-btn">Chi Tiết</button>
+            <button id="guide-btn" class="control-btn">Hướng Dẫn</button>
+        </div>
+
     </div>
 
     <script>
@@ -245,22 +349,48 @@
         const overlayDetail = document.getElementById('overlay-detail');
         const overlayGuide = document.getElementById('overlay-guide');
         const body = document.body;
+        
+        const introOverlay = document.getElementById('intro-overlay');
+        const mainContent = document.getElementById('main-content');
+
+        // XỬ LÝ ĐỂ BẬT KÍCH HOẠT HIỆU ỨNG CHUYỂN CẢNH
+        window.addEventListener('DOMContentLoaded', () => {
+            // Cho phép màn hình chính sẵn sàng hiện lên song song với hoạt ảnh mờ dần của intro
+            mainContent.classList.add('visible');
+
+            // Sau 4.5 giây (khi chữ ẩn hoàn toàn), xóa bỏ hoàn toàn màn che intro
+            setTimeout(() => {
+                introOverlay.classList.add('fade-out');
+                setTimeout(() => {
+                    introOverlay.remove(); // Xóa khỏi DOM để tối ưu bộ nhớ
+                }, 1000);
+            }, 4500);
+        });
+
+        // Hàm reset trạng thái nút bấm về mặc định
+        function resetButtons() {
+            detailBtn.textContent = 'Chi Tiết';
+            detailBtn.classList.remove('active-state');
+            guideBtn.textContent = 'Hướng Dẫn';
+            guideBtn.classList.remove('active-state');
+        }
 
         // Xử lý sự kiện nút Chi Tiết
         detailBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (overlayGuide.classList.contains('active')) {
                 overlayGuide.classList.remove('active');
-                guideBtn.textContent = 'Hướng Dẫn';
             }
 
             overlayDetail.classList.toggle('active');
             
             if (overlayDetail.classList.contains('active')) {
+                resetButtons();
                 detailBtn.textContent = 'Đóng Lại';
+                detailBtn.classList.add('active-state');
                 body.classList.add('info-active');
             } else {
-                detailBtn.textContent = 'Chi Tiết';
+                resetButtons();
                 body.classList.remove('info-active');
             }
         });
@@ -270,16 +400,17 @@
             e.stopPropagation();
             if (overlayDetail.classList.contains('active')) {
                 overlayDetail.classList.remove('active');
-                detailBtn.textContent = 'Chi Tiết';
             }
 
             overlayGuide.classList.toggle('active');
             
             if (overlayGuide.classList.contains('active')) {
+                resetButtons();
                 guideBtn.textContent = 'Đóng Lại';
+                guideBtn.classList.add('active-state');
                 body.classList.add('info-active');
             } else {
-                guideBtn.textContent = 'Hướng Dẫn';
+                resetButtons();
                 body.classList.remove('info-active');
             }
         });
@@ -290,8 +421,7 @@
                 overlayDetail.classList.remove('active');
                 overlayGuide.classList.remove('active');
                 body.classList.remove('info-active');
-                detailBtn.textContent = 'Chi Tiết';
-                guideBtn.textContent = 'Hướng Dẫn';
+                resetButtons();
             }
         });
     </script>
