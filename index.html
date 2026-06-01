@@ -36,6 +36,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s ease;
         }
 
@@ -48,10 +49,15 @@
             font-weight: 600;
             opacity: 0;
             transform: scale(0.95);
-            animation: fadeInText 2s forwards 0.5s, fadeOutText 1.5s forwards 3s;
             text-shadow: 0 0 20px rgba(197, 160, 89, 0.2);
             text-align: center;
             padding: 0 20px;
+            position: absolute;
+        }
+
+        /* Lớp này sẽ được thêm bằng JS sau khi click Bắt Đầu */
+        .intro-text.play-anim {
+            animation: fadeInText 2s forwards 0.5s, fadeOutText 1.5s forwards 3s;
         }
 
         @keyframes fadeInText {
@@ -187,7 +193,7 @@
             font-weight: 500;
         }
 
-        /* --- THIẾT KẾ NÚT BẤM CHUYÊN NGHIỆP --- */
+        /* --- THIẾT KẾ NÚT BẤM --- */
         .button-container {
             position: absolute;
             bottom: 50px;
@@ -250,19 +256,31 @@
             box-shadow: inset 0 0 10px rgba(197, 160, 89, 0.2);
         }
 
+        /* Nút bắt đầu to hơn một chút */
+        #start-btn {
+            font-size: 1.1rem;
+            padding: 18px 45px;
+            background: rgba(20, 20, 20, 0.95);
+            z-index: 101;
+        }
+
         /* --- TỐI ƯU MOBILE --- */
         @media (max-width: 480px) {
             .intro-text { font-size: 1.8rem; letter-spacing: 4px; }
             .info-content { padding: 25px 20px; }
             .button-container { bottom: 30px; gap: 15px; width: 90%; min-width: unset; }
             .control-btn { font-size: 0.75rem; padding: 12px 15px; letter-spacing: 1.5px; flex: 1; }
+            #start-btn { font-size: 0.9rem; padding: 15px 30px; flex: none; }
         }
     </style>
 </head>
 <body>
 
+    <audio id="intro-audio" src="ao_ngu_than.m4a"></audio>
+
     <div id="intro-overlay">
-        <div class="intro-text">Mô hình Áo Ngũ Thân</div>
+        <button id="start-btn" class="control-btn">Bắt Đầu Trải Nghiệm</button>
+        <div class="intro-text" id="intro-text">Mô hình Áo Ngũ Thân</div>
     </div>
 
     <div id="main-content" class="main-content">
@@ -283,12 +301,12 @@
         <div id="overlay-detail" class="overlay-layer">
             <div class="info-content">
                 <h2>Áo ngũ thân</h2>
-                <p>Áo ngũ thân được xem là tiền thân trực tiếp của áo dài hiện đại. Loại áo này phát triển mạnh dưới thời nhà Nguyễn, đặc biệt từ thế kỷ XVIII đến thế kỷ XIX. Áo thể hiện sự trang nghiêm, lịch sự và là dấu mốc quan trọng trong quá trình hình thành áo dài Việt Nam ngày nay[cite: 1].</p>
+                <p>Áo ngũ thân được xem là tiền thân trực tiếp của áo dài hiện đại. Loại áo này phát triển mạnh dưới thời nhà Nguyễn, đặc biệt từ thế kỷ XVIII đến thế kỷ XIX. Áo thể hiện sự trang nghiêm, lịch sự và là dấu mốc quan trọng trong quá trình hình thành áo dài Việt Nam ngày nay.</p>
                 <ul>
-                    <li><strong>Cấu tạo năm thân vải:</strong> Gồm hai thân trước, hai thân sau kết hợp khéo léo cùng một thân nhỏ nằm ẩn ở bên trong[cite: 1].</li>
-                    <li><strong>Kiểu dáng đặc trưng:</strong> Thiết kế cổ đứng trang nhã, hàng cúc cài lệch sang phía bên phải và tà áo dài thướt tha. Trang phục phù hợp cho cả nam lẫn nữ sử dụng trong đời sống hằng ngày và các dịp đại lễ quan trọng[cite: 1].</li>
-                    <li><strong>Biểu tượng Ngũ thường:</strong> Theo quan niệm truyền thống, năm thân áo tượng trưng cho Ngũ thường gồm Nhân, Nghĩa, Lễ, Trí, Tín – những phẩm chất đạo đức cốt lõi của con người[cite: 1].</li>
-                    <li><strong>Biểu tượng Gia tộc:</strong> Năm thân áo còn là hình ảnh đại diện thiêng liêng cho cha mẹ đẻ, cha mẹ vợ (hoặc cha mẹ chồng) và chính người mặc áo[cite: 1].</li>
+                    <li><strong>Cấu tạo năm thân vải:</strong> Gồm hai thân trước, hai thân sau kết hợp khéo léo cùng một thân nhỏ nằm ẩn ở bên trong.</li>
+                    <li><strong>Kiểu dáng đặc trưng:</strong> Thiết kế cổ đứng trang nhã, hàng cúc cài lệch sang phía bên phải và tà áo dài thướt tha. Trang phục phù hợp cho cả nam lẫn nữ sử dụng trong đời sống hằng ngày và các dịp đại lễ quan trọng.</li>
+                    <li><strong>Biểu tượng Ngũ thường:</strong> Theo quan niệm truyền thống, năm thân áo tượng trưng cho Ngũ thường gồm Nhân, Nghĩa, Lễ, Trí, Tín – những phẩm chất đạo đức cốt lõi của con người.</li>
+                    <li><strong>Biểu tượng Gia tộc:</strong> Năm thân áo còn là hình ảnh đại diện thiêng liêng cho cha mẹ đẻ, cha mẹ vợ (hoặc cha mẹ chồng) và chính người mặc áo.</li>
                 </ul>
             </div>
         </div>
@@ -296,7 +314,7 @@
         <div id="overlay-guide" class="overlay-layer">
             <div class="info-content">
                 <h2>Hướng dẫn tương tác</h2>
-                <p>Để phục vụ quá trình khảo cứu văn vật và quan sát mô hình không gian ba chiều một cách toàn diện, quý vị vui lòng thao tác theo chỉ dẫn dưới đây[cite: 2]:</p>
+                <p>Để phục vụ quá trình khảo cứu văn vật và quan sát mô hình không gian ba chiều một cách toàn diện, quý vị vui lòng thao tác theo chỉ dẫn dưới đây:</p>
                 <ul>
                     <li><strong>Phóng to / Thu nhỏ:</strong> Sử dụng thao tác khép hoặc mở hai ngón tay trên màn hình (hoặc lăn nút cuộn chuột trên máy tính) để thay đổi khoảng cách tiêu cự không giới hạn.</li>
                     <li><strong>Di chuyển góc nhìn (Pan):</strong> Sử dụng đồng thời hai ngón tay di chuyển trên màn hình (hoặc giữ chuột phải và kéo trên máy tính) để dịch chuyển vị trí trung tâm của mô hình.</li>
@@ -322,15 +340,40 @@
         
         const introOverlay = document.getElementById('intro-overlay');
         const mainContent = document.getElementById('main-content');
+        
+        // CÁC BIẾN CHO INTRO VÀ AUDIO
+        const startBtn = document.getElementById('start-btn');
+        const introText = document.getElementById('intro-text');
+        const introAudio = document.getElementById('intro-audio');
 
-        // XỬ LÝ CHUYỂN CẢNH INTRO
-        window.addEventListener('DOMContentLoaded', () => {
+        // SỰ KIỆN KHI BẤM NÚT "BẮT ĐẦU"
+        startBtn.addEventListener('click', () => {
+            // Mẹo nhỏ: Play và Pause ngay lập tức để xin quyền phát âm thanh từ trình duyệt
+            introAudio.play().then(() => {
+                introAudio.pause();
+                introAudio.currentTime = 0;
+            }).catch(e => console.log("Lỗi tải audio: ", e));
+
+            // 1. Ẩn nút Bắt Đầu
+            startBtn.style.display = 'none';
+
+            // 2. Kích hoạt hiệu ứng chữ hiện lên (Intro)
+            introText.classList.add('play-anim');
+            
+            // 3. Kích hoạt bộ đếm thời gian chuyển cảnh cho giao diện chính
             mainContent.classList.add('visible');
 
+            // 4. Đợi 4.5 giây (khớp với thời gian hiệu ứng chữ)
             setTimeout(() => {
                 introOverlay.classList.add('fade-out');
+                
+                // --- PHÁT ÂM THANH DUY NHẤT 1 LẦN KHI MÔ HÌNH HIỆN RA ---
+                introAudio.play().catch(error => {
+                    console.log("Trình duyệt vẫn chặn tự động phát: ", error);
+                });
+
                 setTimeout(() => {
-                    introOverlay.remove();
+                    introOverlay.remove(); // Xóa màn hình chờ khỏi DOM
                 }, 1000);
             }, 4500);
         });
