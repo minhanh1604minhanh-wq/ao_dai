@@ -193,6 +193,12 @@
             font-weight: 500;
         }
 
+        /* Thêm đường phân cách nét mảnh cho phần dịch thuật */
+        .info-divider {
+            border-top: 1px dashed rgba(197, 160, 89, 0.3);
+            margin: 30px 0;
+        }
+
         /* --- THIẾT KẾ NÚT BẤM --- */
         .button-container {
             position: absolute;
@@ -300,6 +306,7 @@
 
         <div id="overlay-detail" class="overlay-layer">
             <div class="info-content">
+                <!-- Tiếng Việt -->
                 <h2>Áo ngũ thân</h2>
                 <p>Áo ngũ thân được xem là tiền thân trực tiếp của áo dài hiện đại. Loại áo này phát triển mạnh dưới thời nhà Nguyễn, đặc biệt từ thế kỷ XVIII đến thế kỷ XIX. Áo thể hiện sự trang nghiêm, lịch sự và là dấu mốc quan trọng trong quá trình hình thành áo dài Việt Nam ngày nay.</p>
                 <ul>
@@ -307,6 +314,18 @@
                     <li><strong>Kiểu dáng đặc trưng:</strong> Thiết kế cổ đứng trang nhã, hàng cúc cài lệch sang phía bên phải và tà áo dài thướt tha. Trang phục phù hợp cho cả nam lẫn nữ sử dụng trong đời sống hằng ngày và các dịp đại lễ quan trọng.</li>
                     <li><strong>Biểu tượng Ngũ thường:</strong> Theo quan niệm truyền thống, năm thân áo tượng trưng cho Ngũ thường gồm Nhân, Nghĩa, Lễ, Trí, Tín – những phẩm chất đạo đức cốt lõi của con người.</li>
                     <li><strong>Biểu tượng Gia tộc:</strong> Năm thân áo còn là hình ảnh đại diện thiêng liêng cho cha mẹ đẻ, cha mẹ vợ (hoặc cha mẹ chồng) và chính người mặc áo.</li>
+                </ul>
+
+                <div class="info-divider"></div>
+
+                <!-- Tiếng Anh -->
+                <h2>The Ngu Than Robe</h2>
+                <p>The Ngu Than robe, or five-part dress, is considered the direct predecessor of the modern Ao Dai. This attire flourished during the Nguyen Dynasty, particularly from the 18th to the 19th centuries. The Ngu Than robe embodies solemnity and elegance, marking a significant milestone in the historical evolution of the Vietnamese Ao Dai today.</p>
+                <ul>
+                    <li><strong>Five-Panel Crafting:</strong> The robe is crafted from five fabric panels: two in the front, two in the back, and a smaller inner panel.</li>
+                    <li><strong>Distinctive Design:</strong> It features a standing collar, a row of buttons fastened along the right side, and a long tunic. Both men and women wore the Ngu Than robe in daily life as well as on important occasions.</li>
+                    <li><strong>The Five Constant Virtues:</strong> According to traditional philosophy, the five panels represent the 'Ngu Thuong'—the Five Constant Virtues: Benevolence, Righteousness, Propriety, Wisdom, and Trustworthiness, which are essential moral qualities of human beings.</li>
+                    <li><strong>Family Symbolism:</strong> They also symbolize the wearer's parents, their spouse's parents, and the wearer themselves.</li>
                 </ul>
             </div>
         </div>
@@ -346,7 +365,7 @@
         const introText = document.getElementById('intro-text');
         const introAudio = document.getElementById('intro-audio');
 
-        // SỰ KIỆN KHI BẤM NÚT "BẮT ĐẦU"
+        // SỰ KIỆN KHI BẤM NÚT "BẤT ĐẦU"
         startBtn.addEventListener('click', () => {
             // Mẹo nhỏ: Play và Pause ngay lập tức để xin quyền phát âm thanh từ trình duyệt
             introAudio.play().then(() => {
