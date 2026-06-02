@@ -14,359 +14,123 @@
     <style>
         /* - HIỆU ỨNG TỪ TỪ SÁNG LÊN KHI VÀO TRANG (INTRO LOADING) --*/
         @keyframes pageLoadFade {
-            0% { 
-                opacity: 0; 
-                filter: brightness(0) blur(5px); 
-            }
-            100% { 
-                opacity: 1; 
-                filter: brightness(1) blur(0); 
-            }
+            0% { opacity: 0; filter: brightness(0) blur(5px); }
+            100% { opacity: 1; filter: brightness(1) blur(0); }
         }
 
         /* --- THIẾT LẬP GIAO DIỆN TỔNG THỂ --- */
         body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+            margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
             font-family: 'Lora', serif; 
             background: radial-gradient(circle at center, #2a2a2a 0%, #0a0a0a 100%);
             color: #f4f4f4;
             animation: pageLoadFade 3s ease-out forwards; 
         }
 
-        /* --- THIẾT LẬP MÔ HÌNH 3D --- */
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            --poster-color: transparent;
-            transition: all 1.5s ease-in-out; 
-        }
+        model-viewer { width: 100%; height: 100%; --poster-color: transparent; transition: all 1.5s ease-in-out; }
 
         /* --- MÀN HÌNH CHÀO MỪNG (INTRO SCREEN) --- */
         #intro-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            background: rgba(10, 10, 10, 0.5);
-            transition: opacity 1s ease, visibility 1s ease;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 999; background: rgba(10, 10, 10, 0.5); transition: opacity 1s ease, visibility 1s ease;
         }
 
         .intro-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.2rem;
-            color: #e5c158;
-            letter-spacing: 4px;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 15px rgba(0,0,0,0.9);
-            text-align: center;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-family: 'Playfair Display', serif; font-size: 3.2rem; color: #e5c158;
+            letter-spacing: 4px; margin-bottom: 30px; text-shadow: 2px 2px 15px rgba(0,0,0,0.9);
+            text-align: center; font-weight: 600; text-transform: uppercase;
         }
 
-        /* Cụm nút chọn ngôn ngữ VIETNAM / ENGLISH */
-        .lang-container {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 60px;
-        }
-
+        .lang-container { display: flex; gap: 25px; margin-bottom: 60px; }
         .lang-btn {
-            background: transparent;
-            border: none;
-            color: #8c8c8c;
-            font-family: 'Lora', serif;
-            font-size: 1.1rem;
-            cursor: pointer;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            padding: 5px 10px;
-            position: relative;
+            background: transparent; border: none; color: #8c8c8c; font-family: 'Lora', serif;
+            font-size: 1.1rem; cursor: pointer; letter-spacing: 2px; transition: all 0.3s ease;
+            padding: 5px 10px; position: relative;
         }
-
         .lang-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 1px;
-            background-color: #e5c158;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
+            content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 1px;
+            background-color: #e5c158; transition: all 0.3s ease; transform: translateX(-50%);
         }
+        .lang-btn.active { color: #e5c158; font-weight: 500; }
+        .lang-btn.active::after, .lang-btn:hover::after { width: 80%; }
+        .lang-btn:hover { color: #e5c158; }
 
-        .lang-btn.active {
-            color: #e5c158;
-            font-weight: 500;
-        }
-
-        .lang-btn.active::after, .lang-btn:hover::after {
-            width: 80%;
-        }
-
-        .lang-btn:hover {
-            color: #e5c158;
-        }
-
-        /* Nút Bắt đầu trải nghiệm */
         #start-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            color: #ffffff;
-            padding: 14px 40px;
-            border-radius: 30px;
-            font-family: 'Lora', serif;
-            font-size: 1.1rem;
-            cursor: pointer;
-            letter-spacing: 1px;
-            transition: all 0.4s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            background: transparent; border: 1px solid rgba(255, 255, 255, 0.7); color: #ffffff;
+            padding: 14px 40px; border-radius: 30px; font-family: 'Lora', serif; font-size: 1.1rem;
+            cursor: pointer; letter-spacing: 1px; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
-        #start-btn:hover {
-            background: #ffffff;
-            color: #0a0a0a;
-            border-color: #ffffff;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.4);
-        }
+        #start-btn:hover { background: #ffffff; color: #0a0a0a; border-color: #ffffff; box-shadow: 0 4px 20px rgba(255,255,255,0.4); }
 
         /* --- CỤM NÚT ĐIỀU KHIỂN (TOP RIGHT) --- */
-        #top-controls {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            display: flex;
-            gap: 15px;
-            z-index: 990;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.5s ease;
-        }
-
-        #top-controls.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        #top-controls { position: fixed; top: 30px; right: 30px; display: flex; gap: 15px; z-index: 990; opacity: 0; pointer-events: none; transition: all 0.5s ease; }
+        #top-controls.show { opacity: 1; pointer-events: auto; }
         .top-btn {
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #e5c158;
-            padding: 10px 22px;
-            border-radius: 20px;
-            font-family: 'Lora', serif;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            white-space: nowrap; 
-            min-width: max-content;
-            transition: all 0.3s ease;
+            background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.2); color: #e5c158;
+            padding: 10px 22px; border-radius: 20px; font-family: 'Lora', serif; font-size: 0.9rem;
+            letter-spacing: 1px; cursor: pointer; backdrop-filter: blur(5px); white-space: nowrap; 
+            min-width: max-content; transition: all 0.3s ease;
         }
-
-        .top-btn:hover {
-            background: #e5c158;
-            color: #0a0a0a;
-            border-color: #e5c158;
-            box-shadow: 0 0 15px rgba(229, 193, 88, 0.4);
-        }
+        .top-btn:hover { background: #e5c158; color: #0a0a0a; border-color: #e5c158; box-shadow: 0 0 15px rgba(229, 193, 88, 0.4); }
 
         /* --- GIAO DIỆN CHÍNH (NÚT BẤM PHÍA DƯỚI) --- */
-        #main-ui {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 90;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1.2s ease 0.5s;
-        }
-
-        #main-ui.show-ui {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        #main-ui { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 90; opacity: 0; pointer-events: none; transition: opacity 1.2s ease 0.5s; }
+        #main-ui.show-ui { opacity: 1; pointer-events: auto; }
         .ui-btn {
-            background: rgba(20, 20, 20, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #f4f4f4;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-family: 'Lora', serif;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            background: rgba(20, 20, 20, 0.75); border: 1px solid rgba(255, 255, 255, 0.2); color: #f4f4f4;
+            padding: 12px 30px; border-radius: 25px; font-family: 'Lora', serif; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(5px);
         }
+        .ui-btn:hover, .ui-btn.active-state { border-color: #e5c158; color: #e5c158; background: rgba(30, 30, 30, 0.9); }
 
-        .ui-btn:hover, .ui-btn.active-state {
-            border-color: #e5c158;
-            color: #e5c158;
-            background: rgba(30, 30, 30, 0.9);
-        }
-
-        /* Nút AI đặc biệt */
-        .ai-btn {
-            background: linear-gradient(135deg, #e5c158 0%, #b89224 100%) !important;
-            color: #0a0a0a !important;
-            font-weight: bold;
-            border: none !important;
-            box-shadow: 0 0 15px rgba(229, 193, 88, 0.4);
-        }
-        .ai-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(229, 193, 88, 0.7);
-        }
+        .ai-btn { background: linear-gradient(135deg, #e5c158 0%, #b89224 100%) !important; color: #0a0a0a !important; font-weight: bold; border: none !important; box-shadow: 0 0 15px rgba(229, 193, 88, 0.4); }
+        .ai-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(229, 193, 88, 0.7); }
 
         /* --- LỚP PHỦ THÔNG TIN POPUP (OVERLAYS) --- */
         .overlay-layer {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 380px;
-            height: 100vh;
-            background: rgba(15, 15, 15, 0.92);
-            box-shadow: 5px 0 25px rgba(0,0,0,0.8);
-            z-index: 100;
-            transition: left 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-            padding: 40px 30px;
-            box-sizing: border-box;
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(229, 193, 88, 0.2);
-            overflow-y: auto;
+            position: fixed; top: 0; left: -100%; width: 380px; height: 100vh; background: rgba(15, 15, 15, 0.92);
+            box-shadow: 5px 0 25px rgba(0,0,0,0.8); z-index: 100; transition: left 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            padding: 40px 30px; box-sizing: border-box; backdrop-filter: blur(10px); border-right: 1px solid rgba(229, 193, 88, 0.2); overflow-y: auto;
         }
+        .overlay-layer.active { left: 0; }
+        .overlay-title { font-family: 'Playfair Display', serif; color: #e5c158; font-size: 1.8rem; margin-bottom: 20px; border-bottom: 1px solid rgba(229, 193, 88, 0.3); padding-bottom: 10px; }
+        .overlay-content { font-size: 0.95rem; line-height: 1.7; color: #cdcdcd; }
+        .overlay-content ul { padding-left: 20px; }
+        .overlay-content li { margin-bottom: 10px; }
 
-        .overlay-layer.active {
-            left: 0;
-        }
+        body.info-active model-viewer { opacity: 0.6; transform: scale(0.98); }
+        body.info-active #main-ui button:not(.active-state), body.info-active #top-controls button { pointer-events: none; opacity: 0.3; }
 
-        .overlay-title {
-            font-family: 'Playfair Display', serif;
-            color: #e5c158;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(229, 193, 88, 0.3);
-            padding-bottom: 10px;
-        }
-
-        .overlay-content {
-            font-size: 0.95rem;
-            line-height: 1.7;
-            color: #cdcdcd;
-        }
-
-        .overlay-content ul {
-            padding-left: 20px;
-        }
-        
-        .overlay-content li {
-            margin-bottom: 10px;
-        }
-
-        body.info-active model-viewer {
-            opacity: 0.6;
-            transform: scale(0.98);
-        }
-
-        /* KHÓA NÚT KHI BẢNG THÔNG TIN ĐANG MỞ */
-        body.info-active #main-ui button:not(.active-state),
-        body.info-active #top-controls button {
-            pointer-events: none; /* Khóa click */
-            opacity: 0.3; /* Làm mờ các nút bị vô hiệu hóa */
-        }
-
-        /* --- KHU VỰC AI DIALOG (POPUP Ở GIỮA MÀN HÌNH) --- */
+        /* --- KHU VỰC AI DIALOG --- */
         #ai-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 450px;
-            max-width: 90vw;
-            background: rgba(20, 20, 20, 0.95);
-            border: 1px solid #e5c158;
-            border-radius: 15px;
-            padding: 30px;
-            box-sizing: border-box;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            text-align: center;
-            backdrop-filter: blur(15px);
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 500px; max-width: 90vw; background: rgba(20, 20, 20, 0.98); border: 1px solid #e5c158;
+            border-radius: 15px; padding: 25px; box-sizing: border-box; z-index: 1000; opacity: 0; visibility: hidden;
+            transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; backdrop-filter: blur(15px);
         }
-        #ai-panel.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        .ai-status {
-            font-size: 1.2rem;
-            color: #e5c158;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
+        #ai-panel.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        .ai-status { font-size: 1.1rem; color: #e5c158; margin-bottom: 15px; font-weight: 500; }
+        
         .ai-result-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 15px;
-            min-height: 80px;
-            max-height: 150px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            text-align: left;
-            font-style: italic;
-            color: #dddddd;
-            line-height: 1.5;
+            background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(229, 193, 88, 0.2); border-radius: 8px;
+            padding: 15px; min-height: 60px; max-height: 180px; overflow-y: auto; margin-bottom: 15px;
+            text-align: left; color: #dddddd; line-height: 1.6; font-size: 0.95rem;
         }
-        .ai-action-btns {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
+
+        .ai-input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .ai-text-input {
+            flex: 1; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px; padding: 10px 15px; color: #fff; font-family: 'Lora', serif; font-size: 0.95rem;
+            outline: none; transition: border-color 0.3s;
         }
-        .ai-panel-btn {
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-family: 'Lora', serif;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .btn-confirm {
-            background: #e5c158;
-            color: #0a0a0a;
-        }
-        .btn-retry {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            border-color: rgba(255,255,255,0.3);
-        }
-        .btn-close-ai {
-            background: #cc3333;
-            color: #fff;
-        }
-        .ai-panel-btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
+        .ai-text-input:focus { border-color: #e5c158; }
+
+        .ai-action-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .ai-panel-btn { padding: 10px 22px; border-radius: 20px; font-family: 'Lora', serif; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; border: 1px solid transparent; }
+        .btn-confirm { background: #e5c158; color: #0a0a0a; font-weight: bold; }
+        .btn-retry { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
+        .btn-close-ai { background: #cc3333; color: #fff; }
+        .ai-panel-btn:hover { transform: translateY(-2px); opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -380,28 +144,17 @@
     </div>
 
     <model-viewer 
-        id="myModel" 
-        src="aodai.glb" 
-        auto-rotate 
-        rotation-per-second="-12deg" 
-        camera-orbit="0deg 75deg 140%" 
-        camera-target="0m 0m 0m"
-        shadow-intensity="1.5"
-        bounds="tight"
-        min-field-of-view="10deg"
-        max-field-of-view="45deg"
-        min-camera-orbit="auto auto 5%" 
-        max-camera-orbit="auto auto 200%">
+        id="myModel" src="aodai.glb" auto-rotate rotation-per-second="-12deg" 
+        camera-orbit="0deg 75deg 140%" camera-target="0m 0m 0m" shadow-intensity="1.5" bounds="tight"
+        min-field-of-view="10deg" max-field-of-view="45deg" min-camera-orbit="auto auto 5%" max-camera-orbit="auto auto 200%">
     </model-viewer>
 
     <div id="intro-screen">
         <h1 class="intro-title" id="main-title">ÁO NGŨ THÂN</h1>
-        
         <div class="lang-container">
             <button class="lang-btn active" data-lang="vi">VIETNAM</button>
             <button class="lang-btn" data-lang="en">ENGLISH</button>
         </div>
-
         <button id="start-btn">Bắt Đầu Trải Nghiệm</button>
     </div>
 
@@ -411,12 +164,20 @@
         <button id="aiBtn" class="ui-btn ai-btn">AI Hỏi Đáp</button>
     </div>
 
+    <!-- BẢNG AI HỎI ĐÁP -->
     <div id="ai-panel">
-        <div class="ai-status" id="aiStatus">Đang lắng nghe... Hãy nói câu hỏi của bạn.</div>
-        <div class="ai-result-box" id="aiResultText">...</div>
+        <div class="ai-status" id="aiStatus">Hệ thống AI đang sẵn sàng</div>
+        <div class="ai-result-box" id="aiResultText">Nhấn nút Mic để nói hoặc gõ câu hỏi vào ô bên dưới.</div>
+        
+        <!-- Ô gõ phím -->
+        <div class="ai-input-group">
+            <input type="text" id="aiTextInput" class="ai-text-input" placeholder="Nhập câu hỏi của bạn tại đây...">
+            <button class="ai-panel-btn btn-confirm" id="aiSendTextBtn">Gửi</button>
+        </div>
+
         <div class="ai-action-btns">
-            <button class="ai-panel-btn btn-confirm" id="aiConfirmBtn" style="display:none;">Xác nhận gửi</button>
-            <button class="ai-panel-btn btn-retry" id="aiRetryBtn" style="display:none;">Nói lại</button>
+            <button class="ai-panel-btn btn-confirm" id="aiConfirmBtn" style="display:none;">Xác nhận gửi Voice</button>
+            <button class="ai-panel-btn btn-retry" id="aiRetryBtn">Bật Mic Nói</button>
             <button class="ai-panel-btn btn-close-ai" id="aiCloseBtn">Thoát AI</button>
         </div>
     </div>
@@ -481,7 +242,7 @@
         
         const detailBtn = document.querySelector('#detailBtn');
         const guideBtn = document.querySelector('#guideBtn');
-        const aiBtn = document.querySelector('#aiBtn'); // Nút AI Hỏi đáp
+        const aiBtn = document.querySelector('#aiBtn');
         
         const overlayDetail = document.querySelector('#overlayDetail');
         const overlayGuide = document.querySelector('#overlayGuide');
@@ -490,407 +251,311 @@
         const audioVn = document.querySelector('#audio-vn');
         const audioEn = document.querySelector('#audio-en');
 
-        // Các thành phần thuộc AI Panel mới
         const aiPanel = document.querySelector('#ai-panel');
         const aiStatus = document.querySelector('#aiStatus');
         const aiResultText = document.querySelector('#aiResultText');
         const aiConfirmBtn = document.querySelector('#aiConfirmBtn');
         const aiRetryBtn = document.querySelector('#aiRetryBtn');
         const aiCloseBtn = document.querySelector('#aiCloseBtn');
+        const aiTextInput = document.querySelector('#aiTextInput');
+        const aiSendTextBtn = document.querySelector('#aiSendTextBtn');
 
-        let selectedLang = 'vi'; // Mặc định là Tiếng Việt
-        let recognition = null;   // Đối tượng ghi âm nhận diện giọng nói
-        let finalTranscript = ''; // Lưu chuỗi câu hỏi người dùng nói ra
+        let selectedLang = 'vi'; 
+        let recognition = null;   
+        let finalTranscript = ''; 
 
-        // Từ điển ngôn ngữ mở rộng thêm phần AI
         const dict = {
             vi: {
-                title: "MÔ HÌNH ÁO NGŨ THÂN",
-                startBtn: "Bắt Đầu Trải Nghiệm",
-                restartBtn: "Bắt đầu lại",
-                detailBtn: "Áo Ngũ Thân",
-                guideBtn: "Hướng Dẫn",
-                aiBtn: "AI Hỏi Đáp",
-                closeBtn: "Đóng Lại",
+                title: "MÔ HÌNH ÁO NGŨ THÂN", startBtn: "Bắt Đầu Trải Nghiệm", restartBtn: "Bắt đầu lại",
+                detailBtn: "Áo Ngũ Thân", guideBtn: "Hướng Dẫn", aiBtn: "AI Hỏi Đáp", closeBtn: "Đóng Lại",
                 aiListening: "Đang lắng nghe... Hãy nói câu hỏi của bạn.",
-                aiConfirm: "Bạn có xác nhận câu hỏi này không?",
-                aiProcessing: "Tượng đang suy nghĩ câu trả lời...",
-                aiSpeaking: "Tượng đang trả lời...",
-                aiError: "Không nghe rõ. Vui lòng bấm thử lại.",
-                aiNoSupport: "Trình duyệt của bạn không hỗ trợ nhận diện giọng nói."
+                aiConfirm: "Kiểm tra văn bản thu âm bên dưới, bạn có muốn gửi đi?",
+                aiProcessing: "Tượng đang suy nghĩ câu trả lời...", aiSpeaking: "Tượng đang trả lời...",
+                aiError: "Không nghe rõ hoặc có lỗi xảy ra. Vui lòng thử lại.",
+                aiNoSupport: "Trình duyệt không hỗ trợ nhận diện giọng nói.",
+                placeholder: "Nhập câu hỏi của bạn tại đây...", btnMicText: "Bật Mic Nói"
             },
             en: {
-                title: "THE NGU THAN ROBE",
-                startBtn: "Start Experience",
-                restartBtn: "Restart",
-                detailBtn: "About Robe",
-                guideBtn: "Guide",
-                aiBtn: "AI Q&A",
-                closeBtn: "Close",
+                title: "THE NGU THAN ROBE", startBtn: "Start Experience", restartBtn: "Restart",
+                detailBtn: "About Robe", guideBtn: "Guide", aiBtn: "AI Q&A", closeBtn: "Close",
                 aiListening: "Listening... Please ask your question.",
-                aiConfirm: "Do you confirm this question?",
-                aiProcessing: "The statue is thinking...",
-                aiSpeaking: "The statue is replying...",
-                aiError: "Could not hear clearly. Please try again.",
-                aiNoSupport: "Your browser does not support Speech Recognition."
+                aiConfirm: "Check the recognized text below, confirm to send?",
+                aiProcessing: "The statue is thinking...", aiSpeaking: "The statue is replying...",
+                aiError: "Could not hear or an error occurred. Please try again.",
+                aiNoSupport: "Your browser does not support Speech Recognition.",
+                placeholder: "Type your question here...", btnMicText: "Start Mic"
             }
         };
 
-        // Khởi tạo tính năng Web Speech API (Nhận diện giọng nói)
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.continuous = false; // Chỉ lấy 1 câu ngắn rồi dừng lại xác nhận
-            recognition.interimResults = false; // Chỉ lấy kết quả cuối cùng hoàn chỉnh
+            recognition.continuous = false;
+            recognition.interimResults = false;
         }
 
-        // 1. XỬ LÝ CHỌN NGÔN NGỮ CHUYỂN ĐỔI DICTIONARY Ở MÀN HÌNH CHÀO MỪNG
         langBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 langBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
                 selectedLang = btn.getAttribute('data-lang');
-                
                 document.getElementById('main-title').textContent = dict[selectedLang].title;
                 startBtn.textContent = dict[selectedLang].startBtn;
                 restartBtn.textContent = dict[selectedLang].restartBtn;
-
-                document.querySelectorAll('.lang-vi').forEach(el => {
-                    el.style.display = (selectedLang === 'vi') ? 'block' : 'none';
-                });
-                document.querySelectorAll('.lang-en').forEach(el => {
-                    el.style.display = (selectedLang === 'en') ? 'block' : 'none';
-                });
-
+                document.querySelectorAll('.lang-vi').forEach(el => el.style.display = (selectedLang === 'vi') ? 'block' : 'none');
+                document.querySelectorAll('.lang-en').forEach(el => el.style.display = (selectedLang === 'en') ? 'block' : 'none');
                 resetButtons();
             });
         });
 
-        // 2. LOGIC KHI BẤM NÚT "BẮT ĐẦU TRẢI NGHIỆM"
         startBtn.addEventListener('click', () => {
-            introScreen.style.opacity = '0';
-            introScreen.style.visibility = 'hidden';
-
-            mainUi.classList.add('show-ui');
-            topControls.classList.add('show'); 
-
+            introScreen.style.opacity = '0'; introScreen.style.visibility = 'hidden';
+            mainUi.classList.add('show-ui'); topControls.classList.add('show'); 
             langToggleBtn.textContent = selectedLang === 'vi' ? 'English' : 'Tiếng Việt';
-
-            model.setAttribute('camera-controls', '');
-            model.cameraOrbit = "0deg 75deg 100%";
-
+            model.setAttribute('camera-controls', ''); model.cameraOrbit = "0deg 75deg 100%";
             playBackgroundAudio();
         });
 
         function playBackgroundAudio() {
-            if (selectedLang === 'vi') {
-                audioVn.play().catch(e => console.log(e));
-                audioEn.pause();
-                audioEn.currentTime = 0;
-            } else {
-                audioEn.play().catch(e => console.log(e));
-                audioVn.pause();
-                audioVn.currentTime = 0;
-            }
+            if (selectedLang === 'vi') { audioVn.play().catch(e => console.log(e)); audioEn.pause(); audioEn.currentTime = 0; } 
+            else { audioEn.play().catch(e => console.log(e)); audioVn.pause(); audioVn.currentTime = 0; }
         }
 
         function stopAllAudio() {
-            audioVn.pause();
-            audioEn.pause();
-            // Dừng luôn cả giọng nói AI nếu đang nói dở
-            if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
-            }
+            audioVn.pause(); audioEn.pause();
+            if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
         }
 
-        // 3. LOGIC KHI BẤM NÚT ĐỔI NGÔN NGỮ TRỰC TIẾP
         langToggleBtn.addEventListener('click', () => {
             stopAllAudio();
-
             selectedLang = selectedLang === 'vi' ? 'en' : 'vi';
-
             langToggleBtn.textContent = selectedLang === 'vi' ? 'English' : 'Tiếng Việt';
             restartBtn.textContent = dict[selectedLang].restartBtn;
             resetButtons();
-
-            document.querySelectorAll('.lang-vi').forEach(el => {
-                el.style.display = (selectedLang === 'vi') ? 'block' : 'none';
-            });
-            document.querySelectorAll('.lang-en').forEach(el => {
-                el.style.display = (selectedLang === 'en') ? 'block' : 'none';
-            });
-
+            document.querySelectorAll('.lang-vi').forEach(el => el.style.display = (selectedLang === 'vi') ? 'block' : 'none');
+            document.querySelectorAll('.lang-en').forEach(el => el.style.display = (selectedLang === 'en') ? 'block' : 'none');
             playBackgroundAudio();
         });
 
-        // 4. LOGIC KHI BẤM NÚT "BẤT ĐẦU LẠI"
         restartBtn.addEventListener('click', () => {
-            introScreen.style.opacity = '1';
-            introScreen.style.visibility = 'visible';
-
-            mainUi.classList.remove('show-ui');
-            topControls.classList.remove('show'); 
-
-            model.removeAttribute('camera-controls');
-            model.cameraOrbit = "0deg 75deg 140%";
-
-            stopAllAudio();
-            audioVn.currentTime = 0;
-            audioEn.currentTime = 0;
-
-            overlayDetail.classList.remove('active');
-            overlayGuide.classList.remove('active');
-            aiPanel.classList.remove('active');
-            body.classList.remove('info-active');
+            introScreen.style.opacity = '1'; introScreen.style.visibility = 'visible';
+            mainUi.classList.remove('show-ui'); topControls.classList.remove('show'); 
+            model.removeAttribute('camera-controls'); model.cameraOrbit = "0deg 75deg 140%";
+            stopAllAudio(); audioVn.currentTime = 0; audioEn.currentTime = 0;
+            overlayDetail.classList.remove('active'); overlayGuide.classList.remove('active');
+            aiPanel.classList.remove('active'); body.classList.remove('info-active');
             resetButtons();
         });
 
-        // 5. HÀM RESET TRẠNG THÁI CHỮ CỦA CÁC NÚT BẤM CHÍNH
         function resetButtons() {
-            detailBtn.textContent = dict[selectedLang].detailBtn;
-            detailBtn.classList.remove('active-state');
-            
-            guideBtn.textContent = dict[selectedLang].guideBtn;
-            guideBtn.classList.remove('active-state');
-
-            aiBtn.textContent = dict[selectedLang].aiBtn;
-            aiBtn.classList.remove('active-state');
+            detailBtn.textContent = dict[selectedLang].detailBtn; detailBtn.classList.remove('active-state');
+            guideBtn.textContent = dict[selectedLang].guideBtn; guideBtn.classList.remove('active-state');
+            aiBtn.textContent = dict[selectedLang].aiBtn; aiBtn.classList.remove('active-state');
+            aiTextInput.placeholder = dict[selectedLang].placeholder;
+            aiRetryBtn.textContent = dict[selectedLang].btnMicText;
         }
 
-        // 6. SỰ KIỆN KHI BẤM NÚT "CHI TIẾT / ÁO NGŨ THÂN"
         detailBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            overlayGuide.classList.remove('active');
-            aiPanel.classList.remove('active');
-            if(recognition) recognition.stop();
-
-            overlayDetail.classList.toggle('active');
-            
-            if (overlayDetail.classList.contains('active')) {
-                resetButtons();
-                detailBtn.textContent = dict[selectedLang].closeBtn;
-                detailBtn.classList.add('active-state');
-                body.classList.add('info-active');
-            } else {
-                resetButtons();
-                body.classList.remove('info-active');
-            }
+            e.stopPropagation(); overlayGuide.classList.remove('active'); aiPanel.classList.remove('active');
+            if(recognition) recognition.stop(); overlayDetail.classList.toggle('active');
+            if (overlayDetail.classList.contains('active')) { resetButtons(); detailBtn.textContent = dict[selectedLang].closeBtn; detailBtn.classList.add('active-state'); body.classList.add('info-active'); } 
+            else { resetButtons(); body.classList.remove('info-active'); }
         });
 
-        // 7. SỰ KIỆN KHI BẤM NÚT "HƯỚNG DẪN"
         guideBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            overlayDetail.classList.remove('active');
-            aiPanel.classList.remove('active');
-            if(recognition) recognition.stop();
-
-            overlayGuide.classList.toggle('active');
-            
-            if (overlayGuide.classList.contains('active')) {
-                resetButtons();
-                guideBtn.textContent = dict[selectedLang].closeBtn;
-                guideBtn.classList.add('active-state');
-                body.classList.add('info-active');
-            } else {
-                resetButtons();
-                body.classList.remove('info-active');
-            }
+            e.stopPropagation(); overlayDetail.classList.remove('active'); aiPanel.classList.remove('active');
+            if(recognition) recognition.stop(); overlayGuide.classList.toggle('active');
+            if (overlayGuide.classList.contains('active')) { resetButtons(); guideBtn.textContent = dict[selectedLang].closeBtn; guideBtn.classList.add('active-state'); body.classList.add('info-active'); } 
+            else { resetButtons(); body.classList.remove('info-active'); }
         });
 
-        // ================= XỬ LÝ LOGIC AI HỎI ĐÁP BẰNG GIỌNG NÓI =================
+        // ================= LOGIC AI HỎI ĐÁP Q&A =================
 
-        // 8. KHI BẤM NÚT "AI HỎI ĐÁP"
         aiBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            overlayDetail.classList.remove('active');
-            overlayGuide.classList.remove('active');
-            
-            // 1. Dừng mọi âm thanh thuyết minh hiện tại
+            e.stopPropagation(); overlayDetail.classList.remove('active'); overlayGuide.classList.remove('active');
             stopAllAudio();
-
-            // 2. Mở bảng AI Panel tương tác
-            aiPanel.classList.add('active');
-            body.classList.add('info-active');
-            aiBtn.classList.add('active-state');
-
-            // 3. Kích hoạt chế độ ghi âm ngay lập tức
-            startListeningText();
+            aiPanel.classList.add('active'); body.classList.remove('info-active'); aiBtn.classList.add('active-state');
+            
+            aiStatus.textContent = selectedLang === 'vi' ? "Hệ thống AI đang sẵn sàng" : "AI System Ready";
+            aiResultText.textContent = selectedLang === 'vi' ? "Nhấn nút Mic để nói hoặc gõ câu hỏi vào ô dưới." : "Click Mic to speak or type below.";
+            aiTextInput.value = "";
+            aiConfirmBtn.style.display = 'none';
         });
 
-        // Hàm bắt đầu lắng nghe giọng nói
         function startListeningText() {
-            if (!recognition) {
-                aiStatus.textContent = dict[selectedLang].aiNoSupport;
-                aiResultText.textContent = "";
-                return;
-            }
+            if (!recognition) { aiStatus.textContent = dict[selectedLang].aiNoSupport; return; }
+            if (window.speechSynthesis) window.speechSynthesis.cancel(); 
 
             finalTranscript = '';
             aiResultText.textContent = "...";
             aiStatus.textContent = dict[selectedLang].aiListening;
-            
-            // Ẩn các nút xác nhận khi đang ghi âm
             aiConfirmBtn.style.display = 'none';
-            aiRetryBtn.style.display = 'none';
 
-            // Thiết lập mã ngôn ngữ cho bộ nhận diện
             recognition.lang = selectedLang === 'vi' ? 'vi-VN' : 'en-US';
-            
-            try {
-                recognition.start();
-            } catch(err) {
-                console.log("Ghi âm đã được bật sẵn: ", err);
-            }
+            try { recognition.start(); } catch(err) { console.log(err); }
         }
 
-        // Sự kiện khi nhận diện xong giọng nói thành công
         if (recognition) {
             recognition.onresult = (event) => {
                 finalTranscript = event.results[0][0].transcript;
                 aiResultText.textContent = `"${finalTranscript}"`;
-                
-                // Chuyển sang bước hỏi người dùng có xác nhận nội dung vừa nhận diện không
                 aiStatus.textContent = dict[selectedLang].aiConfirm;
                 aiConfirmBtn.style.display = 'inline-block';
-                aiRetryBtn.style.display = 'inline-block';
             };
-
-            // Sự kiện xảy ra khi người dùng im lặng quá lâu hoặc có lỗi mic
             recognition.onerror = (event) => {
-                console.log("Lỗi Speech:", event.error);
-                if (event.error !== 'no-speech') {
-                    aiStatus.textContent = dict[selectedLang].aiError;
-                    aiRetryBtn.style.display = 'inline-block';
-                }
-            };
-            
-            recognition.onend = () => {
-                if (finalTranscript === '') {
-                    aiStatus.textContent = dict[selectedLang].aiError;
-                    aiRetryBtn.style.display = 'inline-block';
-                }
+                if (event.error !== 'no-speech') { aiStatus.textContent = dict[selectedLang].aiError; }
             };
         }
 
-        // Nút bấm "NÓI LẠI" (Ghi âm lại câu hỏi)
-        aiRetryBtn.addEventListener('click', (e) => {
+        aiRetryBtn.addEventListener('click', (e) => { e.stopPropagation(); startListeningText(); });
+
+        // GỬI BẰNG VOICE
+        aiConfirmBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if(window.speechSynthesis) window.speechSynthesis.cancel();
-            startListeningText();
+            if(!finalTranscript) return;
+            sendQuestionToGemini(finalTranscript);
         });
 
-        // Nút bấm "THOÁT AI"
-        aiCloseBtn.addEventListener('click', (e) => {
+        // GỬI BẰNG PHÍM
+        aiSendTextBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            closeAiSession();
+            const textQuestion = aiTextInput.value.trim();
+            if(!textQuestion) {
+                aiStatus.textContent = dict[selectedLang].aiError;
+                return;
+            }
+            aiConfirmBtn.style.display = 'none';
+            sendQuestionToGemini(textQuestion);
         });
+
+        aiTextInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                aiSendTextBtn.click();
+            }
+        });
+
+        // KẾT NỐI API AI MỚI (ĐƠN GIẢN, MIỄN PHÍ, KHÔNG CẦN API KEY)
+        async function sendQuestionToGemini(question) {
+            aiStatus.textContent = dict[selectedLang].aiProcessing;
+            aiResultText.textContent = selectedLang === 'vi' ? "Đang kết nối đến AI..." : "Connecting to AI...";
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+            let systemInstruction = "";
+            if (selectedLang === 'vi') {
+                systemInstruction = "Bạn là một chuyên gia lịch sử đóng vai bức tượng 3D thuyết minh về 'Áo Ngũ Thân' truyền thống của Việt Nam. BẮT BUỘC trả lời người dùng 100% bằng TIẾNG VIỆT. Không chêm bất kỳ từ tiếng Anh nào (trừ khi người dùng hỏi từ đó). Trả lời ngắn gọn dưới 3 câu, tự nhiên, lịch sự. Tuyệt đối không dùng ký tự in đậm như ** hay *.";
+            } else {
+                systemInstruction = "You are a historical expert and a 3D statue representing the Vietnamese 'Áo Ngũ Thân' (Five-panel robe). Answer entirely in English. Keep it concise under 3 sentences, engaging, and avoid markdown characters like **.";
+            }
+
+            try {
+                const response = await fetch("https://text.pollinations.ai/", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: "system", content: systemInstruction },
+                            { role: "user", content: question }
+                        ],
+                        model: "openai"
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+                }
+
+                const replyText = await response.text();
+                
+                aiResultText.textContent = replyText;
+                aiSpeakResponse(replyText); 
+
+            } catch (error) {
+                console.error("Lỗi kết nối hệ thống AI:", error);
+                aiResultText.textContent = selectedLang === 'vi' ? "Lỗi: Không thể kết nối với máy chủ AI. Vui lòng thử lại sau." : "Error: Unable to fetch response from AI. Please try again later.";
+                aiStatus.textContent = "Error";
+            }
+        }
+
+        // PHÁT GIỌNG NÓI CHUẨN ĐẶC BIỆT DÀNH CHO iMac (macOS)
+        function aiSpeakResponse(textToSpeak) {
+            if (!window.speechSynthesis) return;
+
+            aiStatus.textContent = dict[selectedLang].aiSpeaking;
+            const cleanText = textToSpeak.replace(/[*#_]/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            
+            utterance.lang = selectedLang === 'vi' ? 'vi-VN' : 'en-US';
+            utterance.rate = 1.0; 
+            utterance.pitch = 1.0;
+
+            function setVoiceForUtterance() {
+                const voices = window.speechSynthesis.getVoices();
+                if (selectedLang === 'vi') {
+                    // Lọc chính xác các giọng có mã ngôn ngữ chứa 'vi' (như vi-VN, vi_VN)
+                    const viVoices = voices.filter(v => v.lang.toLowerCase().includes('vi'));
+                    if (viVoices.length > 0) {
+                        // Trên Mac, giọng tiếng Việt thường tên là 'Linh'. Trên Chrome thường là 'Google'
+                        utterance.voice = viVoices.find(v => v.name.includes('Google')) 
+                                       || viVoices.find(v => v.name.includes('Linh')) 
+                                       || viVoices[0];
+                    }
+                } else {
+                    const enVoices = voices.filter(v => v.lang.toLowerCase().includes('en'));
+                    if (enVoices.length > 0) {
+                        utterance.voice = enVoices.find(v => v.name.includes('Google')) 
+                                       || enVoices.find(v => v.name.includes('Samantha') || v.name.includes('Alex'))
+                                       || enVoices[0];
+                    }
+                }
+            }
+
+            // Giải quyết lỗi Safari/Chrome trên Mac tải chậm giọng nói
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    setVoiceForUtterance();
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(utterance);
+                };
+            } else {
+                setVoiceForUtterance();
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
+            }
+
+            utterance.onend = () => {
+                aiStatus.textContent = selectedLang === 'vi' ? "Bạn muốn hỏi thêm điều gì không?" : "Anything else you want to ask?";
+            };
+
+            utterance.onerror = (err) => {
+                console.error("Lỗi phát âm:", err);
+                aiStatus.textContent = dict[selectedLang].aiError;
+            };
+        }
+
+        if (window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+
+        aiCloseBtn.addEventListener('click', (e) => { e.stopPropagation(); closeAiSession(); });
 
         function closeAiSession() {
             if(recognition) recognition.stop();
             stopAllAudio();
-            
             aiPanel.classList.remove('active');
-            body.classList.remove('info-active');
+            aiBtn.classList.remove('active-state');
             resetButtons();
-
-            // Phát lại âm thanh nền ban đầu
-            playBackgroundAudio();
+            playBackgroundAudio(); 
         }
 
-        // Nút bấm "XÁC NHẬN GỬI" câu hỏi lên hệ thống AI
-        aiConfirmBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            aiStatus.textContent = dict[selectedLang].aiProcessing;
-            aiConfirmBtn.style.display = 'none';
-            aiRetryBtn.style.display = 'none';
-
-            // Gửi câu hỏi lên API AI của bạn
-            callYourAIApi(finalTranscript);
-        });
-
-        /**
-         * HÀM GỬI CÂU HỎI LÊN SERVER AI VÀ NHẬN KẾT QUẢ PHẢN HỒI VĂN BẢN
-         */
-        function callYourAIApi(questionText) {
-            // [MÔ PHỎNG]: Thay thế đoạn logic này bằng lệnh fetch() liên kết API thực tế của bạn (GPT/Gemini/Ollama...)
-            // Ví dụ: 
-            /*
-            fetch('https://api.yourdomain.com/v1/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: questionText, lang: selectedLang })
-            })
-            .then(res => res.json())
-            .then(data => {
-                let reply = data.reply;
-                aiSpeakResponse(reply);
-            });
-            */
-
-            // Đoạn Giả Lập Trả Lời Khi Chưa Cắm API Thật:
-            setTimeout(() => {
-                let mockReply = "";
-                if (selectedLang === 'vi') {
-                    mockReply = "Cảm ơn bạn đã hỏi về Áo Ngũ Thân. Đây là trang phục truyền thống có từ thời chúa Nguyễn Phúc Khoát, mang ý nghĩa triết lý sâu sắc đại diện cho đạo đức con người.";
-                } else {
-                    mockReply = "Thank you for asking about the Ngu Than robe. This is a traditional costume originating from the Nguyen Dynasty, representing profound human virtues.";
-                }
-                
-                // Hiển thị câu trả lời dạng văn bản
-                aiResultText.textContent = mockReply;
-                
-                // Bắt đầu cho "Bức tượng nói chuyện" bằng Text-to-Speech
-                aiSpeakResponse(mockReply);
-            }, 1500); 
-        }
-
-        /**
-         * HÀM ĐỂ BỨC TƯỢNG PHÁT RA TIẾNG TRẢ LỜI (TEXT TO SPEECH)
-         */
-        function aiSpeakResponse(textToSpeak) {
-            if (!window.speechSynthesis) {
-                aiStatus.textContent = "Trình duyệt không hỗ trợ phát giọng nói.";
-                aiRetryBtn.style.display = 'inline-block';
-                return;
-            }
-
-            aiStatus.textContent = dict[selectedLang].aiSpeaking;
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            
-            // Chọn cấu hình giọng nói phù hợp ngôn ngữ hệ thống
-            utterance.lang = selectedLang === 'vi' ? 'vi-VN' : 'en-US';
-            utterance.rate = 1.0; // Tốc độ nói thông thường
-
-            utterance.onend = () => {
-                // Sau khi tượng trả lời xong, hiển thị lại nút nói câu khác
-                aiStatus.textContent = selectedLang === 'vi' ? "Bạn muốn hỏi thêm điều gì không?" : "Anything else you want to ask?";
-                aiRetryBtn.style.display = 'inline-block';
-            };
-
-            utterance.onerror = () => {
-                aiStatus.textContent = dict[selectedLang].aiError;
-                aiRetryBtn.style.display = 'inline-block';
-            };
-
-            // Thực hiện phát âm thanh giọng đọc của AI
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // 9. NHẤN RA NGOÀI ĐỂ TỰ ĐỘNG ĐÓNG BẢNG POPUP THÔNG TIN
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.overlay-layer') && !e.target.closest('#main-ui') && !e.target.closest('#top-controls') && !e.target.closest('#ai-panel')) {
-                overlayDetail.classList.remove('active');
-                overlayGuide.classList.remove('active');
-                if (aiPanel.classList.contains('active')) {
-                    closeAiSession();
-                } else {
-                    body.classList.remove('info-active');
-                    resetButtons();
-                }
+                overlayDetail.classList.remove('active'); overlayGuide.classList.remove('active');
+                if (aiPanel.classList.contains('active')) { closeAiSession(); } 
+                else { resetButtons(); }
             }
         });
     </script>
-
 </body>
 </html>
