@@ -34,7 +34,6 @@
             font-family: 'Lora', serif; 
             background: radial-gradient(circle at center, #2a2a2a 0%, #0a0a0a 100%);
             color: #f4f4f4;
-            /* Áp dụng hiệu ứng sáng lên từ từ trong 3 giây khi vừa vào trang */
             animation: pageLoadFade 3s ease-out forwards; 
         }
 
@@ -43,7 +42,6 @@
             width: 100%;
             height: 100%;
             --poster-color: transparent;
-            /* Thêm hiệu ứng mượt mà khi camera thay đổi góc/độ gần xa */
             transition: all 1.5s ease-in-out; 
         }
 
@@ -159,8 +157,12 @@
             z-index: 990;
             backdrop-filter: blur(5px);
             opacity: 0;
-            pointer-events: none; /* Khóa tương tác khi ẩn */
+            pointer-events: none; 
             transition: all 0.5s ease;
+            
+            /* SỬA LỖI ĐÈ CHỮ Ở ĐÂY */
+            white-space: nowrap; 
+            min-width: max-content; 
         }
 
         #restart-btn.show {
@@ -262,6 +264,13 @@
             opacity: 0.6;
             transform: scale(0.98);
         }
+
+        /* KHÓA NÚT KHI BẢNG THÔNG TIN ĐANG MỞ */
+        body.info-active #main-ui button:not(.active-state),
+        body.info-active #restart-btn {
+            pointer-events: none; /* Khóa click */
+            opacity: 0.3; /* Làm mờ các nút bị vô hiệu hóa */
+        }
     </style>
 </head>
 <body>
@@ -278,7 +287,9 @@
         rotation-per-second="-12deg" 
         camera-orbit="0deg 75deg 140%" 
         camera-target="0m 0m 0m"
-        shadow-intensity="1.5">
+        shadow-intensity="1.5"
+        min-camera-orbit="auto auto 0m" 
+        max-camera-orbit="auto auto infinity">
     </model-viewer>
 
     <div id="intro-screen">
