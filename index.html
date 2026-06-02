@@ -551,9 +551,17 @@
 
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.overlay-layer') && !e.target.closest('#main-ui') && !e.target.closest('#top-controls') && !e.target.closest('#ai-panel')) {
-                overlayDetail.classList.remove('active'); overlayGuide.classList.remove('active');
-                if (aiPanel.classList.contains('active')) { closeAiSession(); } 
-                else { resetButtons(); }
+                overlayDetail.classList.remove('active'); 
+                overlayGuide.classList.remove('active');
+                
+                // MÃ SỬA LỖI ĐƯỢC THÊM VÀO ĐÂY: Loại bỏ info-active để mở khóa lại các nút
+                body.classList.remove('info-active'); 
+                
+                if (aiPanel.classList.contains('active')) { 
+                    closeAiSession(); 
+                } else { 
+                    resetButtons(); 
+                }
             }
         });
     </script>
