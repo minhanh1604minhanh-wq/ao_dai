@@ -55,7 +55,6 @@
             position: absolute;
         }
 
-        /* Lớp này sẽ được thêm bằng JS sau khi click Bắt Đầu */
         .intro-text.play-anim {
             animation: fadeInText 2s forwards 0.5s, fadeOutText 1.5s forwards 3s;
         }
@@ -94,7 +93,6 @@
             transform: scale(1);
         }
 
-        /* Tùy chỉnh khung 3D */
         model-viewer {
             width: 100%;
             height: 100%;
@@ -106,7 +104,6 @@
             filter: blur(4px) brightness(0.5);
         }
 
-        /* Lớp phủ bảng thông tin */
         .overlay-layer {
             position: absolute;
             top: 0;
@@ -131,7 +128,6 @@
             pointer-events: auto;
         }
 
-        /* Khung nội dung thông tin */
         .info-content {
             width: 100%;
             max-width: 650px;
@@ -193,13 +189,55 @@
             font-weight: 500;
         }
 
-        /* Thêm đường phân cách nét mảnh cho phần dịch thuật */
         .info-divider {
             border-top: 1px dashed rgba(197, 160, 89, 0.3);
             margin: 30px 0;
         }
 
-        /* --- THIẾT KẾ NÚT BẤM --- */
+        /* KHU VỰC CHỨA CÁC NÚT BẤM PHÁT THUYẾT MINH */
+        .audio-controls-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(197, 160, 89, 0.3);
+            flex-wrap: wrap;
+        }
+
+        .audio-play-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 22px;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #111111;
+            background-color: #c5a059;
+            border: 1px solid #c5a059;
+            border-radius: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .audio-play-btn:hover {
+            background-color: transparent;
+            color: #c5a059;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .audio-play-btn svg {
+            fill: currentColor;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* --- THIẾT KẾ NÚT BẤM ĐIỀU KHIỂN CHÍNH Ở DƯỚI --- */
         .button-container {
             position: absolute;
             bottom: 50px;
@@ -262,7 +300,6 @@
             box-shadow: inset 0 0 10px rgba(197, 160, 89, 0.2);
         }
 
-        /* Nút bắt đầu to hơn một chút */
         #start-btn {
             font-size: 1.1rem;
             padding: 18px 45px;
@@ -277,12 +314,16 @@
             .button-container { bottom: 30px; gap: 15px; width: 90%; min-width: unset; }
             .control-btn { font-size: 0.75rem; padding: 12px 15px; letter-spacing: 1.5px; flex: 1; }
             #start-btn { font-size: 0.9rem; padding: 15px 30px; flex: none; }
+            .audio-controls-container { flex-direction: column; gap: 10px; }
+            .audio-play-btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <audio id="intro-audio" src="ao_ngu_than.m4a"></audio>
+    <!-- Khai báo hai thẻ âm thanh tương ứng -->
+    <audio id="audio-vn" src="ao_ngu_than.mp3"></audio>
+    <audio id="audio-en" src="ao_ngu_than_tienganh.mp3"></audio>
 
     <div id="intro-overlay">
         <button id="start-btn" class="control-btn">Bắt Đầu Trải Nghiệm</button>
@@ -327,6 +368,22 @@
                     <li><strong>The Five Constant Virtues:</strong> According to traditional philosophy, the five panels represent the 'Ngu Thuong'—the Five Constant Virtues: Benevolence, Righteousness, Propriety, Wisdom, and Trustworthiness, which are essential moral qualities of human beings.</li>
                     <li><strong>Family Symbolism:</strong> They also symbolize the wearer's parents, their spouse's parents, and the wearer themselves.</li>
                 </ul>
+
+                <!-- HAI NÚT BẤM PHÁT THUYẾT MINH -->
+                <div class="audio-controls-container">
+                    <button id="btn-play-vn" class="audio-play-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                        </svg>
+                        Thuyết minh (VI)
+                    </button>
+                    <button id="btn-play-en" class="audio-play-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                        </svg>
+                        Audio Guide (EN)
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -360,44 +417,61 @@
         const introOverlay = document.getElementById('intro-overlay');
         const mainContent = document.getElementById('main-content');
         
-        // CÁC BIẾN CHO INTRO VÀ AUDIO
         const startBtn = document.getElementById('start-btn');
         const introText = document.getElementById('intro-text');
-        const introAudio = document.getElementById('intro-audio');
+        
+        // Lấy 2 thẻ audio
+        const audioVn = document.getElementById('audio-vn');
+        const audioEn = document.getElementById('audio-en');
+        
+        // Lấy các nút điều khiển âm thanh
+        const btnPlayVn = document.getElementById('btn-play-vn');
+        const btnPlayEn = document.getElementById('btn-play-en');
+
+        // Hàm tắt toàn bộ âm thanh đang phát để tránh bị đè lên nhau
+        function stopAllAudio() {
+            audioVn.pause();
+            audioEn.pause();
+        }
 
         // SỰ KIỆN KHI BẤM NÚT "BẤT ĐẦU"
         startBtn.addEventListener('click', () => {
-            // Mẹo nhỏ: Play và Pause ngay lập tức để xin quyền phát âm thanh từ trình duyệt
-            introAudio.play().then(() => {
-                introAudio.pause();
-                introAudio.currentTime = 0;
-            }).catch(e => console.log("Lỗi tải audio: ", e));
+            // Kích hoạt giải mã âm thanh trước trên trình duyệt nhằm tránh lỗi bảo mật tự động phát
+            audioVn.play().then(() => { audioVn.pause(); audioVn.currentTime = 0; }).catch(e => console.log(e));
+            audioEn.play().then(() => { audioEn.pause(); audioEn.currentTime = 0; }).catch(e => console.log(e));
 
-            // 1. Ẩn nút Bắt Đầu
             startBtn.style.display = 'none';
-
-            // 2. Kích hoạt hiệu ứng chữ hiện lên (Intro)
             introText.classList.add('play-anim');
-            
-            // 3. Kích hoạt bộ đếm thời gian chuyển cảnh cho giao diện chính
             mainContent.classList.add('visible');
 
-            // 4. Đợi 4.5 giây (khớp với thời gian hiệu ứng chữ)
             setTimeout(() => {
                 introOverlay.classList.add('fade-out');
                 
-                // --- PHÁT ÂM THANH DUY NHẤT 1 LẦN KHI MÔ HÌNH HIỆN RA ---
-                introAudio.play().catch(error => {
-                    console.log("Trình duyệt vẫn chặn tự động phát: ", error);
-                });
+                // Mặc định chạy file Tiếng Việt khi vào giao diện chính
+                audioVn.play().catch(error => console.log("Trình duyệt chặn tự động phát: ", error));
 
                 setTimeout(() => {
-                    introOverlay.remove(); // Xóa màn hình chờ khỏi DOM
+                    introOverlay.remove();
                 }, 1000);
             }, 4500);
         });
 
-        // HÀM RESET TRẠNG THÁI NÚT
+        // XỬ LÝ SỰ KIỆN NÚT PHÁT LẠI TIẾNG VIỆT
+        btnPlayVn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            stopAllAudio();
+            audioVn.currentTime = 0;
+            audioVn.play().catch(err => console.log(err));
+        });
+
+        // XỬ LÝ SỰ KIỆN NÚT PHÁT TIẾNG ANH
+        btnPlayEn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            stopAllAudio();
+            audioEn.currentTime = 0;
+            audioEn.play().catch(err => console.log(err));
+        });
+
         function resetButtons() {
             detailBtn.textContent = 'Áo Ngũ Thân';
             detailBtn.classList.remove('active-state');
@@ -405,7 +479,6 @@
             guideBtn.classList.remove('active-state');
         }
 
-        // XỬ LÝ NÚT CHI TIẾT
         detailBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (overlayGuide.classList.contains('active')) {
@@ -425,7 +498,6 @@
             }
         });
 
-        // XỬ LÝ NÚT HƯỚNG DẪN
         guideBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (overlayDetail.classList.contains('active')) {
@@ -445,7 +517,6 @@
             }
         });
 
-        // ĐÓNG BẢNG KHI NHẤP RA NGOÀI
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('overlay-layer')) {
                 overlayDetail.classList.remove('active');
