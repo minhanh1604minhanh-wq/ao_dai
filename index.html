@@ -263,7 +263,7 @@
         let finalTranscript = ''; 
         
         // Biến lưu trữ luồng Audio TTS từ OpenAI
-        let currentTTSAudio = null;
+        let currentTTSAudio = new Audio(); // Tạo sẵn một Audio trống để lách luật điện thoại
         let typingInterval = null; // Thêm biến này để quản lý hiệu ứng chạy chữ
 
         const dict = {
@@ -419,6 +419,7 @@
         aiConfirmBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if(!finalTranscript) return;
+            currentTTSAudio.play().catch(()=>{}); // Đánh thức âm thanh ngay khi chạm
             sendQuestionToChatGPT(finalTranscript);
         });
 
@@ -431,11 +432,13 @@
                 return;
             }
             aiConfirmBtn.style.display = 'none';
+            currentTTSAudio.play().catch(()=>{}); // Đánh thức âm thanh ngay khi chạm
             sendQuestionToChatGPT(textQuestion);
         });
 
         aiTextInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                currentTTSAudio.play().catch(()=>{}); // Đánh thức âm thanh khi nhấn Enter
                 aiSendTextBtn.click();
             }
         });
@@ -502,7 +505,8 @@
                 if (window.typingInterval) { clearInterval(window.typingInterval); }
                 
                 // Chuẩn bị file audio mới
-                currentTTSAudio = new Audio(audioUrl);
+                // Tái sử dụng băng đĩa đã được đánh thức
+                currentTTSAudio.src = audioUrl;
                 currentTTSAudio.onended = () => {
                     aiStatus.textContent = selectedLang === 'vi' ? "Bạn muốn hỏi thêm điều gì không?" : "Anything else you want to ask?";
                 };
