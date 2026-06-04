@@ -164,12 +164,10 @@
         <button id="aiBtn" class="ui-btn ai-btn">AI Hỏi Đáp</button>
     </div>
 
-    <!-- BẢNG AI HỎI ĐÁP -->
     <div id="ai-panel">
         <div class="ai-status" id="aiStatus">Hệ thống AI đang sẵn sàng</div>
         <div class="ai-result-box" id="aiResultText">Nhấn nút Mic để nói hoặc gõ câu hỏi vào ô bên dưới.</div>
         
-        <!-- Ô gõ phím -->
         <div class="ai-input-group">
             <input type="text" id="aiTextInput" class="ai-text-input" placeholder="Nhập câu hỏi của bạn tại đây...">
             <button class="ai-panel-btn btn-confirm" id="aiSendTextBtn">Gửi</button>
@@ -263,6 +261,10 @@
         let selectedLang = 'vi'; 
         let recognition = null;   
         let finalTranscript = ''; 
+        
+        // Biến lưu trữ luồng Audio TTS từ OpenAI
+        let currentTTSAudio = null;
+        let typingInterval = null; // Thêm biến này để quản lý hiệu ứng chạy chữ
 
         const dict = {
             vi: {
@@ -323,7 +325,11 @@
 
         function stopAllAudio() {
             audioVn.pause(); audioEn.pause();
-            if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+            // Dừng luồng giọng nói OpenAI nếu đang chạy
+            if (currentTTSAudio) {
+                currentTTSAudio.pause();
+                currentTTSAudio = null;
+            }
         }
 
         langToggleBtn.addEventListener('click', () => {
@@ -384,7 +390,7 @@
 
         function startListeningText() {
             if (!recognition) { aiStatus.textContent = dict[selectedLang].aiNoSupport; return; }
-            if (window.speechSynthesis) window.speechSynthesis.cancel(); 
+            if (currentTTSAudio) { currentTTSAudio.pause(); currentTTSAudio = null; }
 
             finalTranscript = '';
             aiResultText.textContent = "...";
@@ -413,7 +419,7 @@
         aiConfirmBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if(!finalTranscript) return;
-            sendQuestionToGemini(finalTranscript);
+            sendQuestionToChatGPT(finalTranscript);
         });
 
         // GỬI BẰNG PHÍM
@@ -425,7 +431,7 @@
                 return;
             }
             aiConfirmBtn.style.display = 'none';
-            sendQuestionToGemini(textQuestion);
+            sendQuestionToChatGPT(textQuestion);
         });
 
         aiTextInput.addEventListener('keypress', (e) => {
@@ -434,108 +440,99 @@
             }
         });
 
-        // KẾT NỐI API AI MỚI (ĐƠN GIẢN, MIỄN PHÍ, KHÔNG CẦN API KEY)
-        async function sendQuestionToGemini(question) {
+        // GỌI API CHATGPT (VĂN BẢN)
+        async function sendQuestionToChatGPT(question) {
             aiStatus.textContent = dict[selectedLang].aiProcessing;
-            aiResultText.textContent = selectedLang === 'vi' ? "Đang kết nối đến AI..." : "Connecting to AI...";
-            if (window.speechSynthesis) window.speechSynthesis.cancel();
-
-            let systemInstruction = "";
-            if (selectedLang === 'vi') {
-                systemInstruction = "Bạn là một chuyên gia lịch sử đóng vai bức tượng 3D thuyết minh về 'Áo Ngũ Thân' truyền thống của Việt Nam. BẮT BUỘC trả lời người dùng 100% bằng TIẾNG VIỆT. Không chêm bất kỳ từ tiếng Anh nào (trừ khi người dùng hỏi từ đó). Trả lời ngắn gọn dưới 3 câu, tự nhiên, lịch sự. Tuyệt đối không dùng ký tự in đậm như ** hay *.";
-            } else {
-                systemInstruction = "You are a historical expert and a 3D statue representing the Vietnamese 'Áo Ngũ Thân' (Five-panel robe). Answer entirely in English. Keep it concise under 3 sentences, engaging, and avoid markdown characters like **.";
-            }
+            aiResultText.textContent = selectedLang === 'vi' ? "Đang kết nối đến máy chủ AI..." : "Connecting to AI server...";
+            if (currentTTSAudio) { currentTTSAudio.pause(); currentTTSAudio = null; }
+            if (typingInterval) { clearInterval(typingInterval); } // Dừng chữ cũ nếu có
 
             try {
-                const response = await fetch("https://text.pollinations.ai/", {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        messages: [
-                            { role: "system", content: systemInstruction },
-                            { role: "user", content: question }
-                        ],
-                        model: "openai"
-                    })
+                // Đã thay thế link cũ bằng link Render mới
+                const response = await fetch('https://backend-api-uvoc.onrender.com/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question, lang: selectedLang })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
-                }
+                const data = await response.json();
 
-                const replyText = await response.text();
+                if (!response.ok) {
+                    aiResultText.textContent = "⚠️ Lỗi từ AI: " + (data.reply || "Không xác định");
+                    aiStatus.textContent = "Error";
+                    return;
+                }
                 
-                aiResultText.textContent = replyText;
-                aiSpeakResponse(replyText); 
+                // MẸO: Không gắn text ra màn hình ngay, mà báo đang lấy giọng nói
+                aiResultText.textContent = selectedLang === 'vi' ? "Đang nạp giọng nói..." : "Loading voice...";
+                
+                // Truyền văn bản qua hàm âm thanh
+                await aiSpeakResponse(data.reply); 
 
             } catch (error) {
-                console.error("Lỗi kết nối hệ thống AI:", error);
-                aiResultText.textContent = selectedLang === 'vi' ? "Lỗi: Không thể kết nối với máy chủ AI. Vui lòng thử lại sau." : "Error: Unable to fetch response from AI. Please try again later.";
+                console.error("Lỗi kết nối:", error);
+                aiResultText.textContent = selectedLang === 'vi' 
+                    ? "Mất kết nối hoàn toàn. Hãy kiểm tra lại kết nối mạng hoặc xem backend có đang chạy không!" 
+                    : "Error connecting to backend server.";
                 aiStatus.textContent = "Error";
             }
         }
 
-        // PHÁT GIỌNG NÓI CHUẨN ĐẶC BIỆT DÀNH CHO iMac (macOS)
-        function aiSpeakResponse(textToSpeak) {
-            if (!window.speechSynthesis) return;
+        // GỌI API TTS (GIỌNG NÓI CHATGPT)
+        async function aiSpeakResponse(textToSpeak) {
+            // Lọc các ký tự markdown (*, #, _) để text hiển thị đẹp và bot đọc mượt hơn
+            const cleanText = textToSpeak.replace(/[*#_]/g, ''); 
 
-            aiStatus.textContent = dict[selectedLang].aiSpeaking;
-            const cleanText = textToSpeak.replace(/[*#_]/g, '');
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            
-            utterance.lang = selectedLang === 'vi' ? 'vi-VN' : 'en-US';
-            utterance.rate = 1.0; 
-            utterance.pitch = 1.0;
+            try {
+                // Đã thay thế link cũ bằng link Render mới
+                const response = await fetch('https://backend-api-uvoc.onrender.com/speak', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: cleanText })
+                });
 
-            function setVoiceForUtterance() {
-                const voices = window.speechSynthesis.getVoices();
-                if (selectedLang === 'vi') {
-                    // Lọc chính xác các giọng có mã ngôn ngữ chứa 'vi' (như vi-VN, vi_VN)
-                    const viVoices = voices.filter(v => v.lang.toLowerCase().includes('vi'));
-                    if (viVoices.length > 0) {
-                        // Trên Mac, giọng tiếng Việt thường tên là 'Linh'. Trên Chrome thường là 'Google'
-                        utterance.voice = viVoices.find(v => v.name.includes('Google')) 
-                                       || viVoices.find(v => v.name.includes('Linh')) 
-                                       || viVoices[0];
-                    }
-                } else {
-                    const enVoices = voices.filter(v => v.lang.toLowerCase().includes('en'));
-                    if (enVoices.length > 0) {
-                        utterance.voice = enVoices.find(v => v.name.includes('Google')) 
-                                       || enVoices.find(v => v.name.includes('Samantha') || v.name.includes('Alex'))
-                                       || enVoices[0];
-                    }
-                }
-            }
+                if (!response.ok) throw new Error("Lỗi tải âm thanh");
 
-            // Giải quyết lỗi Safari/Chrome trên Mac tải chậm giọng nói
-            if (window.speechSynthesis.getVoices().length === 0) {
-                window.speechSynthesis.onvoiceschanged = () => {
-                    setVoiceForUtterance();
-                    window.speechSynthesis.cancel();
-                    window.speechSynthesis.speak(utterance);
+                // Lấy toàn bộ file âm thanh lưu vào trình duyệt
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                // Dừng file audio cũ và hiệu ứng chạy chữ cũ nếu đang chạy
+                if (currentTTSAudio) { currentTTSAudio.pause(); }
+                if (window.typingInterval) { clearInterval(window.typingInterval); }
+                
+                // Chuẩn bị file audio mới
+                currentTTSAudio = new Audio(audioUrl);
+                currentTTSAudio.onended = () => {
+                    aiStatus.textContent = selectedLang === 'vi' ? "Bạn muốn hỏi thêm điều gì không?" : "Anything else you want to ask?";
                 };
-            } else {
-                setVoiceForUtterance();
-                window.speechSynthesis.cancel();
-                window.speechSynthesis.speak(utterance);
-            }
-
-            utterance.onend = () => {
-                aiStatus.textContent = selectedLang === 'vi' ? "Bạn muốn hỏi thêm điều gì không?" : "Anything else you want to ask?";
-            };
-
-            utterance.onerror = (err) => {
-                console.error("Lỗi phát âm:", err);
+                
+                // ====================================================
+                // KÍCH HOẠT ĐỒNG THỜI: VỪA PHÁT ÂM THANH - VỪA CHẠY CHỮ
+                // ====================================================
+                aiStatus.textContent = dict[selectedLang].aiSpeaking;
+                aiResultText.textContent = ""; // Xóa sạch khung chữ trước khi bắt đầu
+                
+                currentTTSAudio.play(); // Kích hoạt AI nói lập tức
+                
+                // Hiệu ứng đánh chữ (Typing Effect)
+                let i = 0;
+                window.typingInterval = setInterval(() => {
+                    if (i < textToSpeak.length) {
+                        aiResultText.textContent += textToSpeak.charAt(i);
+                        i++;
+                        // Tự động cuộn khung chat xuống cuối khi chữ nhiều
+                        aiResultText.scrollTop = aiResultText.scrollHeight; 
+                    } else {
+                        // Chạy hết chữ thì tự dừng tiến trình
+                        clearInterval(window.typingInterval); 
+                    }
+                }, 35); // Tốc độ chạy chữ: 35ms/ký tự (Bạn có thể tăng/giảm số này)
+                
+            } catch (err) {
+                console.error("Lỗi phát giọng nói OpenAI:", err);
                 aiStatus.textContent = dict[selectedLang].aiError;
-            };
-        }
-
-        if (window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+            }
         }
 
         aiCloseBtn.addEventListener('click', (e) => { e.stopPropagation(); closeAiSession(); });
@@ -543,6 +540,10 @@
         function closeAiSession() {
             if(recognition) recognition.stop();
             stopAllAudio();
+            
+            // Bổ sung lệnh ngắt hiệu ứng chữ chạy nếu người dùng tắt ngang
+            if (window.typingInterval) { clearInterval(window.typingInterval); } 
+            
             aiPanel.classList.remove('active');
             aiBtn.classList.remove('active-state');
             resetButtons();
@@ -554,7 +555,6 @@
                 overlayDetail.classList.remove('active'); 
                 overlayGuide.classList.remove('active');
                 
-                // MÃ SỬA LỖI ĐƯỢC THÊM VÀO ĐÂY: Loại bỏ info-active để mở khóa lại các nút
                 body.classList.remove('info-active'); 
                 
                 if (aiPanel.classList.contains('active')) { 
