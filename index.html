@@ -262,9 +262,9 @@
         let recognition = null;   
         let finalTranscript = ''; 
         
-        // Biến lưu trữ luồng Audio TTS từ OpenAI
-        let currentTTSAudio = new Audio(); // Tạo sẵn một Audio trống để lách luật điện thoại
-        let typingInterval = null; // Thêm biến này để quản lý hiệu ứng chạy chữ
+        // Khởi tạo một đối tượng Audio cố định để lách luật chặn âm thanh trên điện thoại
+        let currentTTSAudio = new Audio();
+        let typingInterval = null; 
 
         const dict = {
             vi: {
@@ -293,7 +293,7 @@
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.continuous = false;
-            recognition.interimResults = false;
+            recognition.interimResults = true; // Bật tính năng hiển thị chữ ngay lập tức
         }
 
         langBtns.forEach(btn => {
@@ -325,10 +325,9 @@
 
         function stopAllAudio() {
             audioVn.pause(); audioEn.pause();
-            // Dừng luồng giọng nói OpenAI nếu đang chạy
             if (currentTTSAudio) {
                 currentTTSAudio.pause();
-                currentTTSAudio = null;
+                currentTTSAudio.src = ""; // Chỉ xóa tiếng, không hủy đối tượng
             }
         }
 
@@ -390,7 +389,7 @@
 
         function startListeningText() {
             if (!recognition) { aiStatus.textContent = dict[selectedLang].aiNoSupport; return; }
-            if (currentTTSAudio) { currentTTSAudio.pause(); currentTTSAudio = null; }
+            if (currentTTSAudio) { currentTTSAudio.pause(); } 
 
             finalTranscript = '';
             aiResultText.textContent = "...";
@@ -403,10 +402,29 @@
 
         if (recognition) {
             recognition.onresult = (event) => {
-                finalTranscript = event.results[0][0].transcript;
-                aiResultText.textContent = `"${finalTranscript}"`;
-                aiStatus.textContent = dict[selectedLang].aiConfirm;
-                aiConfirmBtn.style.display = 'inline-block';
+                let interimTranscript = '';
+                let isFinal = false;
+                
+                finalTranscript = ''; 
+
+                // Lặp qua từng chữ được nhận diện
+                for (let i = 0; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                        isFinal = true;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                
+                // IN CHỮ NGAY LẬP TỨC LÊN MÀN HÌNH MỖI KHI BẠN PHÁT ÂM
+                aiResultText.textContent = `"${finalTranscript + interimTranscript}"`;
+
+                // CHỈ HIỆN NÚT XÁC NHẬN KHI BẠN ĐÃ NGỪNG NÓI
+                if (isFinal) {
+                    aiStatus.textContent = dict[selectedLang].aiConfirm;
+                    aiConfirmBtn.style.display = 'inline-block';
+                }
             };
             recognition.onerror = (event) => {
                 if (event.error !== 'no-speech') { aiStatus.textContent = dict[selectedLang].aiError; }
@@ -447,11 +465,10 @@
         async function sendQuestionToChatGPT(question) {
             aiStatus.textContent = dict[selectedLang].aiProcessing;
             aiResultText.textContent = selectedLang === 'vi' ? "Đang kết nối đến máy chủ AI..." : "Connecting to AI server...";
-            if (currentTTSAudio) { currentTTSAudio.pause(); currentTTSAudio = null; }
-            if (typingInterval) { clearInterval(typingInterval); } // Dừng chữ cũ nếu có
+            if (currentTTSAudio) { currentTTSAudio.pause(); } 
+            if (typingInterval) { clearInterval(typingInterval); } 
 
             try {
-                // Đã thay thế link cũ bằng link Render mới
                 const response = await fetch('https://backend-api-uvoc.onrender.com/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -466,10 +483,7 @@
                     return;
                 }
                 
-                // MẸO: Không gắn text ra màn hình ngay, mà báo đang lấy giọng nói
                 aiResultText.textContent = selectedLang === 'vi' ? "Đang nạp giọng nói..." : "Loading voice...";
-                
-                // Truyền văn bản qua hàm âm thanh
                 await aiSpeakResponse(data.reply); 
 
             } catch (error) {
@@ -483,11 +497,9 @@
 
         // GỌI API TTS (GIỌNG NÓI CHATGPT)
         async function aiSpeakResponse(textToSpeak) {
-            // Lọc các ký tự markdown (*, #, _) để text hiển thị đẹp và bot đọc mượt hơn
             const cleanText = textToSpeak.replace(/[*#_]/g, ''); 
 
             try {
-                // Đã thay thế link cũ bằng link Render mới
                 const response = await fetch('https://backend-api-uvoc.onrender.com/speak', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -496,42 +508,33 @@
 
                 if (!response.ok) throw new Error("Lỗi tải âm thanh");
 
-                // Lấy toàn bộ file âm thanh lưu vào trình duyệt
                 const audioBlob = await response.blob();
                 const audioUrl = URL.createObjectURL(audioBlob);
                 
-                // Dừng file audio cũ và hiệu ứng chạy chữ cũ nếu đang chạy
                 if (currentTTSAudio) { currentTTSAudio.pause(); }
                 if (window.typingInterval) { clearInterval(window.typingInterval); }
                 
-                // Chuẩn bị file audio mới
-                // Tái sử dụng băng đĩa đã được đánh thức
+                // Nạp vào băng đĩa đã được đánh thức
                 currentTTSAudio.src = audioUrl;
                 currentTTSAudio.onended = () => {
                     aiStatus.textContent = selectedLang === 'vi' ? "Bạn muốn hỏi thêm điều gì không?" : "Anything else you want to ask?";
                 };
                 
-                // ====================================================
-                // KÍCH HOẠT ĐỒNG THỜI: VỪA PHÁT ÂM THANH - VỪA CHẠY CHỮ
-                // ====================================================
                 aiStatus.textContent = dict[selectedLang].aiSpeaking;
-                aiResultText.textContent = ""; // Xóa sạch khung chữ trước khi bắt đầu
+                aiResultText.textContent = ""; 
                 
-                currentTTSAudio.play(); // Kích hoạt AI nói lập tức
+                currentTTSAudio.play(); 
                 
-                // Hiệu ứng đánh chữ (Typing Effect)
                 let i = 0;
                 window.typingInterval = setInterval(() => {
                     if (i < textToSpeak.length) {
                         aiResultText.textContent += textToSpeak.charAt(i);
                         i++;
-                        // Tự động cuộn khung chat xuống cuối khi chữ nhiều
                         aiResultText.scrollTop = aiResultText.scrollHeight; 
                     } else {
-                        // Chạy hết chữ thì tự dừng tiến trình
                         clearInterval(window.typingInterval); 
                     }
-                }, 35); // Tốc độ chạy chữ: 35ms/ký tự (Bạn có thể tăng/giảm số này)
+                }, 35); 
                 
             } catch (err) {
                 console.error("Lỗi phát giọng nói OpenAI:", err);
@@ -545,7 +548,6 @@
             if(recognition) recognition.stop();
             stopAllAudio();
             
-            // Bổ sung lệnh ngắt hiệu ứng chữ chạy nếu người dùng tắt ngang
             if (window.typingInterval) { clearInterval(window.typingInterval); } 
             
             aiPanel.classList.remove('active');
