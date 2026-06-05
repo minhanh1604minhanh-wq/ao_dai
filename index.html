@@ -12,13 +12,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* - HIỆU ỨNG TỪ TỪ SÁNG LÊN KHI VÀO TRANG (INTRO LOADING) --*/
+        /* - HIỆU ỨNG TỪ TỪ SÁNG LÊN KHI VÀO TRANG --*/
         @keyframes pageLoadFade {
             0% { opacity: 0; filter: brightness(0) blur(5px); }
             100% { opacity: 1; filter: brightness(1) blur(0); }
         }
 
-        /* --- THIẾT LẬP GIAO DIỆN TỔNG THỂ --- */
         body {
             margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
             font-family: 'Lora', serif; 
@@ -29,7 +28,22 @@
 
         model-viewer { width: 100%; height: 100%; --poster-color: transparent; transition: all 1.5s ease-in-out; }
 
-        /* --- MÀN HÌNH CHÀO MỪNG (INTRO SCREEN) --- */
+        /* --- BÀN TAY HƯỚNG DẪN VUỐT CHẠM --- */
+        #tutorial-hand {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 3rem; color: #fff; pointer-events: none; z-index: 80;
+            text-shadow: 0 0 15px rgba(229, 193, 88, 0.8);
+            animation: swipeHand 2s infinite ease-in-out;
+            opacity: 0; visibility: hidden; transition: opacity 0.5s ease;
+        }
+        #tutorial-hand.show { opacity: 1; visibility: visible; }
+        @keyframes swipeHand {
+            0% { transform: translate(-20%, -50%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-120%, -50%); opacity: 0; }
+        }
+
+        /* --- MÀN HÌNH CHÀO MỪNG --- */
         #intro-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -70,7 +84,7 @@
             background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.2); color: #e5c158;
             padding: 10px 22px; border-radius: 20px; font-family: 'Lora', serif; font-size: 0.9rem;
             letter-spacing: 1px; cursor: pointer; backdrop-filter: blur(5px); white-space: nowrap; 
-            min-width: max-content; transition: all 0.3s ease;
+            transition: all 0.3s ease;
         }
         .top-btn:hover { background: #e5c158; color: #0a0a0a; border-color: #e5c158; box-shadow: 0 0 15px rgba(229, 193, 88, 0.4); }
 
@@ -105,10 +119,17 @@
         #ai-panel {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
             width: 500px; max-width: 90vw; background: rgba(20, 20, 20, 0.98); border: 1px solid #e5c158;
-            border-radius: 15px; padding: 25px; box-sizing: border-box; z-index: 1000; opacity: 0; visibility: hidden;
+            border-radius: 15px; padding: 30px 25px 25px; box-sizing: border-box; z-index: 1000; opacity: 0; visibility: hidden;
             transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center; backdrop-filter: blur(15px);
         }
         #ai-panel.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        
+        .ai-close-icon {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            color: #8c8c8c; font-size: 1.8rem; cursor: pointer; transition: color 0.3s; padding: 0; line-height: 1;
+        }
+        .ai-close-icon:hover { color: #e5c158; }
+
         .ai-status { font-size: 1.1rem; color: #e5c158; margin-bottom: 15px; font-weight: 500; }
         
         .ai-result-box {
@@ -117,28 +138,42 @@
             text-align: left; color: #dddddd; line-height: 1.6; font-size: 0.95rem;
         }
 
+        /* Gợi ý câu hỏi */
+        .prompt-suggestions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
+        .prompt-chip {
+            background: rgba(229, 193, 88, 0.1); border: 1px solid rgba(229, 193, 88, 0.4); color: #e5c158;
+            padding: 6px 14px; border-radius: 15px; font-size: 0.85rem; font-family: 'Lora', serif;
+            cursor: pointer; transition: all 0.3s; white-space: nowrap;
+        }
+        .prompt-chip:hover { background: rgba(229, 193, 88, 0.3); transform: translateY(-2px); }
+
         .ai-input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         .ai-text-input {
-            flex: 1; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2);
+            flex: 1; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(229, 193, 88, 0.6);
             border-radius: 20px; padding: 10px 15px; color: #fff; font-family: 'Lora', serif; font-size: 0.95rem;
-            outline: none; transition: border-color 0.3s;
+            outline: none; transition: all 0.3s;
         }
-        .ai-text-input:focus { border-color: #e5c158; }
+        .ai-text-input:focus { border-color: #e5c158; box-shadow: 0 0 10px rgba(229, 193, 88, 0.3); }
 
         .ai-action-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-        .ai-panel-btn { padding: 10px 22px; border-radius: 20px; font-family: 'Lora', serif; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; border: 1px solid transparent; }
-        .btn-confirm { background: #e5c158; color: #0a0a0a; font-weight: bold; }
-        .btn-retry { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
-        .btn-close-ai { background: #cc3333; color: #fff; }
-        .ai-panel-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .ai-panel-btn { padding: 12px 25px; border-radius: 25px; font-family: 'Lora', serif; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; border: 1px solid transparent; }
+        
+        .btn-confirm { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.3); }
+        .btn-confirm:hover { background: rgba(255,255,255,0.2); }
+        
+        .btn-retry { background: linear-gradient(135deg, #e5c158 0%, #b89224 100%); color: #000; font-weight: bold; }
+        .btn-retry:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(229, 193, 88, 0.5); }
     </style>
 </head>
 <body>
 
-    <audio id="audio-vn" src="ao_ngu_than.mp3"></audio>
-    <audio id="audio-en" src="ao_ngu_than_tienganh.mp3"></audio>
+    <audio id="audio-vn" src="ao_ngu_than.mp3" loop></audio>
+    <audio id="audio-en" src="ao_ngu_than_tienganh.mp3" loop></audio>
+
+    <div id="tutorial-hand">👆</div>
 
     <div id="top-controls">
+        <button id="mute-btn" class="top-btn">🔊 Âm thanh</button>
         <button id="lang-toggle-btn" class="top-btn">English</button>
         <button id="restart-btn" class="top-btn">Bắt đầu lại</button>
     </div>
@@ -165,9 +200,16 @@
     </div>
 
     <div id="ai-panel">
+        <button class="ai-close-icon" id="aiCloseBtn">&times;</button>
         <div class="ai-status" id="aiStatus">Hệ thống AI đang sẵn sàng</div>
         <div class="ai-result-box" id="aiResultText">Nhấn nút Mic để nói hoặc gõ câu hỏi vào ô bên dưới.</div>
         
+        <div class="prompt-suggestions" id="promptContainer">
+            <button class="prompt-chip" data-query="Áo này mặc dịp nào?">Áo này mặc dịp nào?</button>
+            <button class="prompt-chip" data-query="Ý nghĩa 5 thân áo là gì?">Ý nghĩa 5 thân áo?</button>
+            <button class="prompt-chip" data-query="Chất liệu áo là gì?">Chất liệu áo là gì?</button>
+        </div>
+
         <div class="ai-input-group">
             <input type="text" id="aiTextInput" class="ai-text-input" placeholder="Nhập câu hỏi của bạn tại đây...">
             <button class="ai-panel-btn btn-confirm" id="aiSendTextBtn">Gửi</button>
@@ -175,8 +217,7 @@
 
         <div class="ai-action-btns">
             <button class="ai-panel-btn btn-confirm" id="aiConfirmBtn" style="display:none;">Xác nhận gửi Voice</button>
-            <button class="ai-panel-btn btn-retry" id="aiRetryBtn">Bật Mic Nói</button>
-            <button class="ai-panel-btn btn-close-ai" id="aiCloseBtn">Thoát AI</button>
+            <button class="ai-panel-btn btn-retry" id="aiRetryBtn">🎙️ Bật Mic Nói</button>
         </div>
     </div>
 
@@ -234,9 +275,11 @@
         const introScreen = document.querySelector('#intro-screen');
         const startBtn = document.querySelector('#start-btn');
         const topControls = document.querySelector('#top-controls');
+        const muteBtn = document.querySelector('#mute-btn');
         const langToggleBtn = document.querySelector('#lang-toggle-btn');
         const restartBtn = document.querySelector('#restart-btn');
         const mainUi = document.querySelector('#main-ui');
+        const tutorialHand = document.querySelector('#tutorial-hand');
         
         const detailBtn = document.querySelector('#detailBtn');
         const guideBtn = document.querySelector('#guideBtn');
@@ -257,37 +300,44 @@
         const aiCloseBtn = document.querySelector('#aiCloseBtn');
         const aiTextInput = document.querySelector('#aiTextInput');
         const aiSendTextBtn = document.querySelector('#aiSendTextBtn');
+        
+        const promptContainer = document.querySelector('#promptContainer');
+        const promptChips = document.querySelectorAll('.prompt-chip');
 
         let selectedLang = 'vi'; 
+        let isMuted = false;
         let recognition = null;   
         let finalTranscript = ''; 
         
-        // --- CÁC BIẾN QUẢN LÝ TIẾN TRÌNH (Để xử lý việc Ngắt/Chèn câu hỏi) ---
         let currentTTSAudio = new Audio();
-        currentTTSAudio.volume = 1.0; // Ép âm lượng lên 100% tối đa
+        currentTTSAudio.volume = 1.0; 
         let typingInterval = null; 
-        let currentAbortController = null; // Công tắc ngắt Request cũ khi hỏi câu mới
+        let currentAbortController = null; 
 
         const dict = {
             vi: {
                 title: "MÔ HÌNH ÁO NGŨ THÂN", startBtn: "Bắt Đầu Trải Nghiệm", restartBtn: "Bắt đầu lại",
+                muteOn: "🔊 Âm thanh", muteOff: "🔇 Tắt âm",
                 detailBtn: "Áo Ngũ Thân", guideBtn: "Hướng Dẫn", aiBtn: "AI Hỏi Đáp", closeBtn: "Đóng Lại",
                 aiListening: "Đang lắng nghe... Hãy nói câu hỏi của bạn.",
                 aiConfirm: "Kiểm tra văn bản thu âm bên dưới, bạn có muốn gửi đi?",
                 aiProcessing: "Tượng đang suy nghĩ câu trả lời...", aiSpeaking: "Tượng đang trả lời...",
                 aiError: "Không nghe rõ hoặc có lỗi xảy ra. Vui lòng thử lại.",
                 aiNoSupport: "Trình duyệt không hỗ trợ nhận diện giọng nói.",
-                placeholder: "Nhập câu hỏi của bạn tại đây...", btnMicText: "Bật Mic Nói"
+                placeholder: "Nhập câu hỏi của bạn tại đây...", btnMicText: "🎙️ Bật Mic Nói",
+                prompts: ["Áo này mặc dịp nào?", "Ý nghĩa 5 thân áo?", "Chất liệu áo là gì?"]
             },
             en: {
                 title: "THE NGU THAN ROBE", startBtn: "Start Experience", restartBtn: "Restart",
+                muteOn: "🔊 Sound On", muteOff: "🔇 Muted",
                 detailBtn: "About Robe", guideBtn: "Guide", aiBtn: "AI Q&A", closeBtn: "Close",
                 aiListening: "Listening... Please ask your question.",
                 aiConfirm: "Check the recognized text below, confirm to send?",
                 aiProcessing: "The statue is thinking...", aiSpeaking: "The statue is replying...",
                 aiError: "Could not hear or an error occurred. Please try again.",
                 aiNoSupport: "Your browser does not support Speech Recognition.",
-                placeholder: "Type your question here...", btnMicText: "Start Mic"
+                placeholder: "Type your question here...", btnMicText: "🎙️ Start Mic",
+                prompts: ["When to wear this?", "Meaning of 5 panels?", "What is the material?"]
             }
         };
 
@@ -306,8 +356,17 @@
                 document.getElementById('main-title').textContent = dict[selectedLang].title;
                 startBtn.textContent = dict[selectedLang].startBtn;
                 restartBtn.textContent = dict[selectedLang].restartBtn;
+                muteBtn.textContent = isMuted ? dict[selectedLang].muteOff : dict[selectedLang].muteOn;
+                
+                // Cập nhật text ngôn ngữ trong màn hình
                 document.querySelectorAll('.lang-vi').forEach(el => el.style.display = (selectedLang === 'vi') ? 'block' : 'none');
                 document.querySelectorAll('.lang-en').forEach(el => el.style.display = (selectedLang === 'en') ? 'block' : 'none');
+                
+                // Cập nhật câu hỏi gợi ý
+                promptChips.forEach((chip, index) => {
+                    chip.textContent = dict[selectedLang].prompts[index];
+                    chip.setAttribute('data-query', dict[selectedLang].prompts[index]);
+                });
                 resetButtons();
             });
         });
@@ -317,15 +376,32 @@
             mainUi.classList.add('show-ui'); topControls.classList.add('show'); 
             langToggleBtn.textContent = selectedLang === 'vi' ? 'English' : 'Tiếng Việt';
             model.setAttribute('camera-controls', ''); model.cameraOrbit = "0deg 75deg 100%";
+            tutorialHand.classList.add('show'); // Hiện hướng dẫn vuốt
             playBackgroundAudio();
         });
 
+        // Tắt bàn tay hướng dẫn khi người dùng bắt đầu tương tác với mô hình
+        model.addEventListener('mousedown', () => tutorialHand.classList.remove('show'));
+        model.addEventListener('touchstart', () => tutorialHand.classList.remove('show'));
+
         function playBackgroundAudio() {
+            if (isMuted) return;
             if (selectedLang === 'vi') { audioVn.play().catch(e => console.log(e)); audioEn.pause(); audioEn.currentTime = 0; } 
             else { audioEn.play().catch(e => console.log(e)); audioVn.pause(); audioVn.currentTime = 0; }
         }
 
-        // HÀM NGẮT TOÀN BỘ TIẾN TRÌNH AI (Đang nói, đang chạy chữ, đang chờ API)
+        // Logic Bật/Tắt âm nhạc nền
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            if (isMuted) {
+                audioVn.pause(); audioEn.pause();
+                muteBtn.textContent = dict[selectedLang].muteOff;
+            } else {
+                playBackgroundAudio();
+                muteBtn.textContent = dict[selectedLang].muteOn;
+            }
+        });
+
         function stopAllAITasks() {
             if (currentTTSAudio) { 
                 currentTTSAudio.pause(); 
@@ -336,7 +412,7 @@
                 typingInterval = null; 
             }
             if (currentAbortController) {
-                currentAbortController.abort(); // Giết request cũ
+                currentAbortController.abort(); 
             }
         }
 
@@ -350,15 +426,23 @@
             selectedLang = selectedLang === 'vi' ? 'en' : 'vi';
             langToggleBtn.textContent = selectedLang === 'vi' ? 'English' : 'Tiếng Việt';
             restartBtn.textContent = dict[selectedLang].restartBtn;
+            muteBtn.textContent = isMuted ? dict[selectedLang].muteOff : dict[selectedLang].muteOn;
             resetButtons();
             document.querySelectorAll('.lang-vi').forEach(el => el.style.display = (selectedLang === 'vi') ? 'block' : 'none');
             document.querySelectorAll('.lang-en').forEach(el => el.style.display = (selectedLang === 'en') ? 'block' : 'none');
-            playBackgroundAudio();
+            
+            promptChips.forEach((chip, index) => {
+                chip.textContent = dict[selectedLang].prompts[index];
+                chip.setAttribute('data-query', dict[selectedLang].prompts[index]);
+            });
+
+            if(!isMuted) playBackgroundAudio();
         });
 
         restartBtn.addEventListener('click', () => {
             introScreen.style.opacity = '1'; introScreen.style.visibility = 'visible';
             mainUi.classList.remove('show-ui'); topControls.classList.remove('show'); 
+            tutorialHand.classList.remove('show');
             model.removeAttribute('camera-controls'); model.cameraOrbit = "0deg 75deg 140%";
             stopAllAudio(); audioVn.currentTime = 0; audioEn.currentTime = 0;
             overlayDetail.classList.remove('active'); overlayGuide.classList.remove('active');
@@ -392,7 +476,7 @@
 
         aiBtn.addEventListener('click', (e) => {
             e.stopPropagation(); overlayDetail.classList.remove('active'); overlayGuide.classList.remove('active');
-            stopAllAudio();
+            stopAllAITasks(); // Chỉ dừng AI, giữ nguyên nhạc nền
             aiPanel.classList.add('active'); body.classList.remove('info-active'); aiBtn.classList.add('active-state');
             
             aiStatus.textContent = selectedLang === 'vi' ? "Hệ thống AI đang sẵn sàng" : "AI System Ready";
@@ -403,8 +487,7 @@
 
         function startListeningText() {
             if (!recognition) { aiStatus.textContent = dict[selectedLang].aiNoSupport; return; }
-            
-            stopAllAITasks(); // Dọn sạch đường cho câu hỏi mới
+            stopAllAITasks(); 
 
             finalTranscript = '';
             aiResultText.textContent = "...";
@@ -471,14 +554,22 @@
             }
         });
 
-        // GỌI API CHATGPT (VĂN BẢN)
+        // Logic khi bấm vào câu hỏi gợi ý
+        promptChips.forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const query = chip.getAttribute('data-query');
+                aiTextInput.value = query;
+                currentTTSAudio.play().catch(()=>{}); 
+                sendQuestionToChatGPT(query);
+            });
+        });
+
         async function sendQuestionToChatGPT(question) {
             aiStatus.textContent = dict[selectedLang].aiProcessing;
             aiResultText.textContent = selectedLang === 'vi' ? "Đang kết nối đến máy chủ AI..." : "Connecting to AI server...";
             
-            stopAllAITasks(); // Dừng ngay câu trả lời cũ nếu có
-
-            // Tạo công tắc ngắt kết nối mới
+            stopAllAITasks(); 
             currentAbortController = new AbortController();
 
             try {
@@ -486,7 +577,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ question: question, lang: selectedLang }),
-                    signal: currentAbortController.signal // Gắn công tắc vào API
+                    signal: currentAbortController.signal 
                 });
 
                 const data = await response.json();
@@ -501,19 +592,13 @@
                 await aiSpeakResponse(data.reply); 
 
             } catch (error) {
-                if (error.name === 'AbortError') {
-                    console.log("Đã ngắt API do người dùng hỏi câu mới.");
-                    return; // Bỏ qua lỗi ngắt kết nối chủ động
-                }
+                if (error.name === 'AbortError') return; 
                 console.error("Lỗi kết nối:", error);
-                aiResultText.textContent = selectedLang === 'vi' 
-                    ? "Mất kết nối hoàn toàn. Hãy kiểm tra lại kết nối mạng!" 
-                    : "Error connecting to backend server.";
+                aiResultText.textContent = selectedLang === 'vi' ? "Mất kết nối hoàn toàn. Hãy kiểm tra lại kết nối mạng!" : "Error connecting to backend server.";
                 aiStatus.textContent = "Error";
             }
         }
 
-        // GỌI API TTS (GIỌNG NÓI CHATGPT)
         async function aiSpeakResponse(textToSpeak) {
             const cleanText = textToSpeak.replace(/[*#_]/g, ''); 
 
@@ -522,7 +607,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: cleanText }),
-                    signal: currentAbortController.signal // Gắn công tắc vào API Voice
+                    signal: currentAbortController.signal 
                 });
 
                 if (!response.ok) throw new Error("Lỗi tải âm thanh");
@@ -530,10 +615,10 @@
                 const audioBlob = await response.blob();
                 const audioUrl = URL.createObjectURL(audioBlob);
                 
-                stopAllAITasks(); // Dọn dẹp trước khi bắt đầu nói câu mới
+                stopAllAITasks(); 
                 
                 currentTTSAudio.src = audioUrl;
-                currentTTSAudio.volume = 1.0; // Xác nhận max volume lần nữa
+                currentTTSAudio.volume = 1.0; 
                 currentTTSAudio.onended = () => {
                     aiStatus.textContent = selectedLang === 'vi' ? "Bạn muốn hỏi thêm điều gì không?" : "Anything else you want to ask?";
                 };
@@ -556,7 +641,7 @@
                 }, 35); 
                 
             } catch (err) {
-                if (err.name === 'AbortError') return; // Bỏ qua lỗi ngắt kết nối chủ động
+                if (err.name === 'AbortError') return; 
                 console.error("Lỗi phát giọng nói OpenAI:", err);
                 aiStatus.textContent = dict[selectedLang].aiError;
             }
@@ -566,12 +651,11 @@
 
         function closeAiSession() {
             if(recognition) recognition.stop();
-            stopAllAudio(); // Dừng tất cả mọi thứ khi thoát
+            stopAllAITasks(); // Chỉ dừng AI, nhạc nền vẫn giữ nguyên nếu đang bật
             
             aiPanel.classList.remove('active');
             aiBtn.classList.remove('active-state');
             resetButtons();
-            playBackgroundAudio(); 
         }
 
         window.addEventListener('click', (e) => {
