@@ -1,14 +1,14 @@
 {
-  "name": "ngo_quyen_backend",
+  "name": "vo_nguyen_giap_package",
   "version": "1.0.0",
   "description": "Backend API for Ngo Quyen Interactive 3D Model Web Project",
-  "main": "server_ngo_quyen.js",
+  "main": "server_vo_nguyen_giap.js",
   "scripts": {
-    "start": "node server_ngo_quyen.js",
+    "start": "node server_vo_nguyen_giap.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "ngo-quyen",
+    "vo-nguyen-giap",
     "history",
     "backend",
     "openai"
