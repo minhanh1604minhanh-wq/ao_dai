@@ -1,0 +1,25 @@
+{
+  "name": "ngo_quyen_backend",
+  "version": "1.0.0",
+  "description": "Backend API for Ngo Quyen Interactive 3D Model Web Project",
+  "main": "server_ngo_quyen.js",
+  "scripts": {
+    "start": "node server_ngo_quyen.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ngo-quyen",
+    "history",
+    "backend",
+    "openai"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "openai": "^6.42.0"
+  }
+}
