@@ -1,7 +1,7 @@
 {
   "name": "vo_nguyen_giap_package",
   "version": "1.0.0",
-  "description": "Backend API for Ngo Quyen Interactive 3D Model Web Project",
+  "description": "Backend API for Vo Nguyen Giap Interactive 3D Model Web Project",
   "main": "server_vo_nguyen_giap.js",
   "scripts": {
     "start": "node server_vo_nguyen_giap.js",
